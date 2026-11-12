@@ -5,48 +5,53 @@
 > 所有接口方法均挂载在 `ApiClient` 上，通过 `Query` 对象传参。使用前请先阅读 [README](../README.md) 了解基本用法。
 >
 > 不兼容变更与升级注意事项请参阅 [MIGRATION.md](MIGRATION.md)。
+>
+> 想按方法名快速查找，请使用 [完整方法索引](API_INDEX.md)。
 
 ---
 
 ## 目录
 
-- [登录相关](#登录相关)
-- [用户相关](#用户相关)
-- [歌曲相关](#歌曲相关)
-- [搜索相关](#搜索相关)
-- [歌单相关](#歌单相关)
-- [评论相关](#评论相关)
-- [歌手相关](#歌手相关)
-- [专辑相关](#专辑相关)
-- [MV 相关](#mv-相关)
-- [视频相关](#视频相关)
-- [电台相关](#电台相关)
-- [推荐相关](#推荐相关)
-- [排行榜相关](#排行榜相关)
-- [云盘相关](#云盘相关)
-- [私信相关](#私信相关)
-- [VIP/会员](#vip会员)
-- [云贝](#云贝)
-- [听歌足迹](#听歌足迹)
-- [风格/曲风](#风格曲风)
-- [数字专辑](#数字专辑)
-- [声音/播客](#声音播客)
-- [助眠解压](#助眠解压)
-- [云小编](#云小编)
-- [音乐人](#音乐人)
-- [粉丝中心](#粉丝中心)
-- [UGC 百科](#ugc-百科)
-- [一起听](#一起听)
-- [广播电台](#广播电台)
-- [其他](#其他)
+- [完整方法索引](API_INDEX.md)
+- [登录相关](#cat-login)
+- [用户相关](#cat-user)
+- [歌曲相关](#cat-song)
+- [搜索相关](#cat-search)
+- [歌单相关](#cat-playlist)
+- [评论相关](#cat-comment)
+- [歌手相关](#cat-artist)
+- [专辑相关](#cat-album)
+- [MV 相关](#cat-mv)
+- [视频相关](#cat-video)
+- [电台相关](#cat-dj)
+- [🎯 推荐相关](#cat-recommend)
+- [🏆 排行榜相关](#cat-ranking)
+- [云盘相关](#cat-cloud)
+- [💌 私信相关](#cat-message)
+- [👑 VIP/会员](#cat-vip)
+- [🌟 云贝](#cat-yunbei)
+- [👣 听歌足迹](#cat-listen)
+- [🎨 风格/曲风](#cat-style)
+- [💿 数字专辑](#cat-digital-album)
+- [🎙️ 声音/播客](#cat-voice)
+- [🧘 助眠解压](#cat-sati)
+- [🎵 音乐人](#cat-musician)
+- [👥 粉丝中心](#cat-fans)
+- [📚 UGC 百科](#cat-ugc)
+- [🎧 一起听](#cat-listentogether)
+- [📡 广播电台](#cat-broadcast)
+- [🧑‍💻 云小编](#cat-yunbianji)
+- [🔧 其他](#cat-other)
 
 ---
 
+<a id="cat-login"></a>
 ## 登录相关
 
 ---
 
-#### 邮箱登录
+<a id="method-login"></a>
+### login - 邮箱登录
 
 说明 : 登录有三个接口，不要频繁调用登录接口，不然可能会被风控，登录状态还存在就不要重复调用登录接口
 
@@ -56,7 +61,7 @@
 
 **方法名 :** `login`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("email", "xxx@163.com")
@@ -66,7 +71,8 @@ let result = client.login(&query).await?;
 
 ---
 
-#### 手机登录
+<a id="method-login_cellphone"></a>
+### login_cellphone - 手机登录
 
 说明 : 手机号码登录
 
@@ -84,7 +90,7 @@ let result = client.login(&query).await?;
 
 **方法名 :** `login_cellphone`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("phone", "13xxx")
@@ -100,13 +106,14 @@ let result = client.login_cellphone(&query).await?;
 
 ---
 
-#### 二维码 key 生成
+<a id="method-login_qr_key"></a>
+### login_qr_key - 二维码 key 生成
 
 说明 : 调用此接口可生成一个二维码登录用的 key。返回结构为 `{ data: { unikey }, code }`，`unikey` 位于 `body.data.unikey`（与 Node.js 版一致）。
 
 **方法名 :** `login_qr_key`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.login_qr_key(&query).await?;
@@ -115,7 +122,8 @@ let unikey = result.body["data"]["unikey"].as_str().unwrap_or_default();
 
 ---
 
-#### 二维码生成
+<a id="method-login_qr_create"></a>
+### login_qr_create - 二维码生成
 
 说明 : 调用此接口传入上一个接口生成的 key 可生成二维码图片的 base64 和二维码信息，可使用 base64 展示图片，或者使用二维码信息内容自行使用第三方二维码生成库渲染二维码
 
@@ -125,7 +133,7 @@ let unikey = result.body["data"]["unikey"].as_str().unwrap_or_default();
 
 **方法名 :** `login_qr_create`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("key", "xxx")
@@ -136,7 +144,8 @@ let result = client.login_qr_create(&query).await?;
 
 ---
 
-#### 二维码检测扫码状态
+<a id="method-login_qr_check"></a>
+### login_qr_check - 二维码检测扫码状态
 
 说明 : 轮询此接口可获取二维码扫码状态，800 为二维码过期，801 为等待扫码，802 为待确认，803 为授权登录成功（803 状态码下会返回 cookies）。授权成功时，set-cookie 会拼接后放入 `body.cookie`。
 
@@ -144,7 +153,7 @@ let result = client.login_qr_create(&query).await?;
 
 **方法名 :** `login_qr_check`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("key", "xxx");
 let result = client.login_qr_check(&query).await?;
@@ -152,13 +161,14 @@ let result = client.login_qr_check(&query).await?;
 
 ---
 
-#### 游客登录
+<a id="method-register_anonimous"></a>
+### register_anonimous - 游客登录
 
 说明 : 直接调用此接口，可获取游客 cookie，如果遇到其他接口未登录状态报 400 状态码需要验证的错误，可使用此接口获取游客 cookie 避免报错。接口使用客户端当前设备 ID 注册，成功时会在 body 中返回拼接后的 `cookie`。
 
 **方法名 :** `register_anonimous`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.register_anonimous(&query).await?;
@@ -166,13 +176,14 @@ let result = client.register_anonimous(&query).await?;
 
 ---
 
-#### 刷新登录
+<a id="method-login_refresh"></a>
+### login_refresh - 刷新登录
 
 说明 : 调用此接口，可刷新登录状态，返回内容包含新的 cookie（不支持刷新二维码登录的 cookie）
 
 **方法名 :** `login_refresh`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.login_refresh(&query).await?;
@@ -180,13 +191,14 @@ let result = client.login_refresh(&query).await?;
 
 ---
 
-#### 登录状态
+<a id="method-login_status"></a>
+### login_status - 登录状态
 
 说明 : 调用此接口，可获取登录状态
 
 **方法名 :** `login_status`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.login_status(&query).await?;
@@ -194,13 +206,14 @@ let result = client.login_status(&query).await?;
 
 ---
 
-#### 退出登录
+<a id="method-logout"></a>
+### logout - 退出登录
 
 说明 : 调用此接口，可退出登录
 
 **方法名 :** `logout`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.logout(&query).await?;
@@ -208,7 +221,8 @@ let result = client.logout(&query).await?;
 
 ---
 
-#### 发送验证码
+<a id="method-captcha_sent"></a>
+### captcha_sent - 发送验证码
 
 说明 : 调用此接口，传入手机号码，可发送验证码
 
@@ -218,7 +232,7 @@ let result = client.logout(&query).await?;
 
 **方法名 :** `captcha_sent`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("phone", "13xxx");
 let result = client.captcha_sent(&query).await?;
@@ -226,7 +240,8 @@ let result = client.captcha_sent(&query).await?;
 
 ---
 
-#### 验证验证码
+<a id="method-captcha_verify"></a>
+### captcha_verify - 验证验证码
 
 说明 : 调用此接口，传入手机号码和验证码，可校验验证码是否正确
 
@@ -236,7 +251,7 @@ let result = client.captcha_sent(&query).await?;
 
 **方法名 :** `captcha_verify`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("phone", "13xxx")
@@ -246,7 +261,8 @@ let result = client.captcha_verify(&query).await?;
 
 ---
 
-#### 注册(修改密码)
+<a id="method-register_cellphone"></a>
+### register_cellphone - 注册(修改密码)
 
 说明 : 调用此接口，传入手机号码和验证码、密码、昵称，可注册网易云音乐账号（同时可修改密码）
 
@@ -256,7 +272,7 @@ let result = client.captcha_verify(&query).await?;
 
 **方法名 :** `register_cellphone`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("phone", "13xxx")
@@ -268,7 +284,8 @@ let result = client.register_cellphone(&query).await?;
 
 ---
 
-#### 检测手机号码是否已注册
+<a id="method-cellphone_existence_check"></a>
+### cellphone_existence_check - 检测手机号码是否已注册
 
 说明 : 调用此接口，可检测手机号码是否已注册
 
@@ -278,7 +295,7 @@ let result = client.register_cellphone(&query).await?;
 
 **方法名 :** `cellphone_existence_check`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("phone", "13xxx");
 let result = client.cellphone_existence_check(&query).await?;
@@ -286,7 +303,8 @@ let result = client.cellphone_existence_check(&query).await?;
 
 ---
 
-#### 初始化昵称
+<a id="method-activate_init_profile"></a>
+### activate_init_profile - 初始化昵称
 
 说明 : 刚注册的账号（需登录），调用此接口，可初始化昵称
 
@@ -294,7 +312,7 @@ let result = client.cellphone_existence_check(&query).await?;
 
 **方法名 :** `activate_init_profile`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("nickname", "testUser2019");
 let result = client.activate_init_profile(&query).await?;
@@ -302,7 +320,8 @@ let result = client.activate_init_profile(&query).await?;
 
 ---
 
-#### 重复昵称检测
+<a id="method-nickname_check"></a>
+### nickname_check - 重复昵称检测
 
 说明 : 调用此接口，可检测昵称是否重复，并提供备用昵称
 
@@ -310,7 +329,7 @@ let result = client.activate_init_profile(&query).await?;
 
 **方法名 :** `nickname_check`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("nickname", "binaryify");
 let result = client.nickname_check(&query).await?;
@@ -318,7 +337,8 @@ let result = client.nickname_check(&query).await?;
 
 ---
 
-#### 更换绑定手机
+<a id="method-rebind"></a>
+### rebind - 更换绑定手机
 
 说明 : 调用此接口，可更换绑定手机（流程：先发送验证码到原手机号码，再发送验证码到新手机号码然后再调用此接口）
 
@@ -326,7 +346,7 @@ let result = client.nickname_check(&query).await?;
 
 **方法名 :** `rebind`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("phone", "xxx")
@@ -337,7 +357,8 @@ let result = client.rebind(&query).await?;
 
 ---
 
-#### 发送安全验证码
+<a id="method-captcha_safe_sent"></a>
+### captcha_safe_sent - 发送安全验证码
 
 说明 : 发送安全验证码（风控验证场景）
 
@@ -345,7 +366,7 @@ let result = client.rebind(&query).await?;
 
 **方法名 :** `captcha_safe_sent`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("ctcode", "86");
 let result = client.captcha_safe_sent(&query).await?;
@@ -353,7 +374,8 @@ let result = client.captcha_safe_sent(&query).await?;
 
 ---
 
-#### 发送验证码 v1
+<a id="method-captcha_sent_v1"></a>
+### captcha_sent_v1 - 发送验证码 v1
 
 说明 : 客户端登录场景的手机验证码发送接口
 
@@ -363,7 +385,7 @@ let result = client.captcha_safe_sent(&query).await?;
 
 **方法名 :** `captcha_sent_v1`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("phone", "13xxx");
 let result = client.captcha_sent_v1(&query).await?;
@@ -371,7 +393,8 @@ let result = client.captcha_sent_v1(&query).await?;
 
 ---
 
-#### 登录设备列表
+<a id="method-device_list"></a>
+### device_list - 登录设备列表
 
 说明 : 登录后获取当前账号的登录设备列表
 
@@ -379,7 +402,7 @@ let result = client.captcha_sent_v1(&query).await?;
 
 **方法名 :** `device_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.device_list(&query).await?;
@@ -387,7 +410,8 @@ let result = client.device_list(&query).await?;
 
 ---
 
-#### 强制下线设备
+<a id="method-device_kickoff"></a>
+### device_kickoff - 强制下线设备
 
 说明 : 登录后强制下线指定的登录设备
 
@@ -397,7 +421,7 @@ let result = client.device_list(&query).await?;
 
 **方法名 :** `device_kickoff`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("deviceKey", "xxx")
@@ -407,7 +431,8 @@ let result = client.device_kickoff(&query).await?;
 
 ---
 
-#### 上报设备中心设备名称
+<a id="method-deviceinfo_center_upload"></a>
+### deviceinfo_center_upload - 上报设备中心设备名称
 
 说明 : 修改当前设备在「登录设备管理」中显示的名称
 
@@ -415,7 +440,7 @@ let result = client.device_kickoff(&query).await?;
 
 **方法名 :** `deviceinfo_center_upload`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("deviceName", "我的电脑");
 let result = client.deviceinfo_center_upload(&query).await?;
@@ -423,7 +448,8 @@ let result = client.deviceinfo_center_upload(&query).await?;
 
 ---
 
-#### 获取易盾 v3 token
+<a id="method-register_checktoken_v3"></a>
+### register_checktoken_v3 - 获取易盾 v3 token
 
 说明 : 实时获取易盾 v3 反作弊 token（不缓存）
 
@@ -431,7 +457,7 @@ let result = client.deviceinfo_center_upload(&query).await?;
 
 **方法名 :** `register_checktoken_v3`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.register_checktoken_v3(&query).await?;
@@ -440,7 +466,8 @@ let result = client.register_checktoken_v3(&query).await?;
 
 ---
 
-#### 刷新 neapi 密钥配置
+<a id="method-register_neapikey"></a>
+### register_neapikey - 刷新 neapi 密钥配置
 
 说明 : 向服务端重新拉取 neapi 配置并刷新本地缓存，密钥本身不会返回
 
@@ -448,7 +475,7 @@ let result = client.register_checktoken_v3(&query).await?;
 
 **方法名 :** `register_neapikey`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.register_neapikey(&query).await?;
@@ -457,7 +484,8 @@ let result = client.register_neapikey(&query).await?;
 
 ---
 
-#### 刷新 xeapi 公钥
+<a id="method-register_xeapikey"></a>
+### register_xeapikey - 刷新 xeapi 公钥
 
 说明 : 重新向服务端申请 xeapi 公钥并刷新本地缓存
 
@@ -465,7 +493,7 @@ let result = client.register_neapikey(&query).await?;
 
 **方法名 :** `register_xeapikey`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.register_xeapikey(&query).await?;
@@ -474,11 +502,13 @@ let result = client.register_xeapikey(&query).await?;
 ---
 
 
-### 用户相关
+<a id="cat-user"></a>
+## 用户相关
 
 ---
 
-#### 获取用户详情
+<a id="method-user_detail"></a>
+### user_detail - 获取用户详情
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户详情
 
@@ -486,7 +516,7 @@ let result = client.register_xeapikey(&query).await?;
 
 **方法名 :** `user_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_detail(&query).await?;
@@ -494,7 +524,8 @@ let result = client.user_detail(&query).await?;
 
 ---
 
-#### 获取用户详情（新版）
+<a id="method-user_detail_new"></a>
+### user_detail_new - 获取用户详情（新版）
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户详情（新版接口，返回更全面的信息）
 
@@ -502,7 +533,7 @@ let result = client.user_detail(&query).await?;
 
 **方法名 :** `user_detail_new`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_detail_new(&query).await?;
@@ -510,13 +541,14 @@ let result = client.user_detail_new(&query).await?;
 
 ---
 
-#### 获取账号信息
+<a id="method-user_account"></a>
+### user_account - 获取账号信息
 
 说明 : 登录后调用此接口，可获取用户账号信息
 
 **方法名 :** `user_account`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_account(&query).await?;
@@ -524,13 +556,14 @@ let result = client.user_account(&query).await?;
 
 ---
 
-#### 获取用户信息 , 歌单，收藏，mv, dj 数量
+<a id="method-user_subcount"></a>
+### user_subcount - 获取用户信息 , 歌单，收藏，mv, dj 数量
 
 说明 : 登录后调用此接口，可以获取用户信息
 
 **方法名 :** `user_subcount`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_subcount(&query).await?;
@@ -538,13 +571,14 @@ let result = client.user_subcount(&query).await?;
 
 ---
 
-#### 获取用户等级信息
+<a id="method-user_level"></a>
+### user_level - 获取用户等级信息
 
 说明 : 登录后调用此接口，可以获取用户等级信息，包含当前登录天数，听歌次数，下一等级需要的登录天数和听歌次数，当前等级进度
 
 **方法名 :** `user_level`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_level(&query).await?;
@@ -552,7 +586,8 @@ let result = client.user_level(&query).await?;
 
 ---
 
-#### 获取用户绑定信息
+<a id="method-user_binding"></a>
+### user_binding - 获取用户绑定信息
 
 说明 : 登录后调用此接口，可以获取用户绑定信息
 
@@ -560,7 +595,7 @@ let result = client.user_level(&query).await?;
 
 **方法名 :** `user_binding`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_binding(&query).await?;
@@ -568,7 +603,8 @@ let result = client.user_binding(&query).await?;
 
 ---
 
-#### 用户绑定手机
+<a id="method-user_bindingcellphone"></a>
+### user_bindingcellphone - 用户绑定手机
 
 说明 : 登录后调用此接口，可以绑定手机号码
 
@@ -578,7 +614,7 @@ let result = client.user_binding(&query).await?;
 
 **方法名 :** `user_bindingcellphone`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("phone", "13xxx")
@@ -588,7 +624,8 @@ let result = client.user_bindingcellphone(&query).await?;
 
 ---
 
-#### 用户更换绑定手机
+<a id="method-user_replacephone"></a>
+### user_replacephone - 用户更换绑定手机
 
 说明 : 登录后调用此接口，可以更换绑定手机
 
@@ -598,7 +635,7 @@ let result = client.user_bindingcellphone(&query).await?;
 
 **方法名 :** `user_replacephone`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("phone", "xxx")
@@ -609,7 +646,8 @@ let result = client.user_replacephone(&query).await?;
 
 ---
 
-#### 更新用户信息
+<a id="method-user_update"></a>
+### user_update - 更新用户信息
 
 说明 : 登录后调用此接口，传入相关信息，可以更新用户信息
 
@@ -617,7 +655,7 @@ let result = client.user_replacephone(&query).await?;
 
 **方法名 :** `user_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("gender", "0")
@@ -631,7 +669,8 @@ let result = client.user_update(&query).await?;
 
 ---
 
-#### 更新头像
+<a id="method-avatar_upload"></a>
+### avatar_upload - 更新头像
 
 说明 : 登录后调用此接口，可更新头像
 
@@ -639,7 +678,7 @@ let result = client.user_update(&query).await?;
 
 **方法名 :** `avatar_upload`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("imgSize", "200");
 let result = client.avatar_upload(&query).await?;
@@ -647,7 +686,8 @@ let result = client.avatar_upload(&query).await?;
 
 ---
 
-#### 获取用户歌单
+<a id="method-user_playlist"></a>
+### user_playlist - 获取用户歌单
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户歌单
 
@@ -657,7 +697,7 @@ let result = client.avatar_upload(&query).await?;
 
 **方法名 :** `user_playlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_playlist(&query).await?;
@@ -665,7 +705,8 @@ let result = client.user_playlist(&query).await?;
 
 ---
 
-#### 用户的创建歌单列表
+<a id="method-user_playlist_create"></a>
+### user_playlist_create - 用户的创建歌单列表
 
 说明 : 调用此接口，传入用户 id，获取用户的创建歌单列表
 
@@ -675,7 +716,7 @@ let result = client.user_playlist(&query).await?;
 
 **方法名 :** `user_playlist_create`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_playlist_create(&query).await?;
@@ -683,7 +724,8 @@ let result = client.user_playlist_create(&query).await?;
 
 ---
 
-#### 用户的收藏歌单列表
+<a id="method-user_playlist_collect"></a>
+### user_playlist_collect - 用户的收藏歌单列表
 
 说明 : 调用此接口，传入用户 id，获取用户的收藏歌单列表
 
@@ -693,7 +735,7 @@ let result = client.user_playlist_create(&query).await?;
 
 **方法名 :** `user_playlist_collect`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_playlist_collect(&query).await?;
@@ -701,7 +743,8 @@ let result = client.user_playlist_collect(&query).await?;
 
 ---
 
-#### 获取用户关注列表
+<a id="method-user_follows"></a>
+### user_follows - 获取用户关注列表
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户关注列表
 
@@ -711,7 +754,7 @@ let result = client.user_playlist_collect(&query).await?;
 
 **方法名 :** `user_follows`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_follows(&query).await?;
@@ -719,7 +762,8 @@ let result = client.user_follows(&query).await?;
 
 ---
 
-#### 获取用户粉丝列表
+<a id="method-user_followeds"></a>
+### user_followeds - 获取用户粉丝列表
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户粉丝列表
 
@@ -729,7 +773,7 @@ let result = client.user_follows(&query).await?;
 
 **方法名 :** `user_followeds`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_followeds(&query).await?;
@@ -737,7 +781,8 @@ let result = client.user_followeds(&query).await?;
 
 ---
 
-#### 当前账号关注的用户/歌手
+<a id="method-user_follow_mixed"></a>
+### user_follow_mixed - 当前账号关注的用户/歌手
 
 说明 : 调用此接口，可获得当前账号关注的用户/歌手
 
@@ -745,7 +790,7 @@ let result = client.user_followeds(&query).await?;
 
 **方法名 :** `user_follow_mixed`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("scene", "1");
 let result = client.user_follow_mixed(&query).await?;
@@ -753,7 +798,8 @@ let result = client.user_follow_mixed(&query).await?;
 
 ---
 
-#### 用户是否互相关注
+<a id="method-user_mutualfollow_get"></a>
+### user_mutualfollow_get - 用户是否互相关注
 
 说明 : 登录后调用此接口，传入用户 id，可判断用户是否互相关注
 
@@ -761,7 +807,7 @@ let result = client.user_follow_mixed(&query).await?;
 
 **方法名 :** `user_mutualfollow_get`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_mutualfollow_get(&query).await?;
@@ -769,7 +815,8 @@ let result = client.user_mutualfollow_get(&query).await?;
 
 ---
 
-#### 获取用户动态
+<a id="method-user_event"></a>
+### user_event - 获取用户动态
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户动态
 
@@ -779,7 +826,7 @@ let result = client.user_mutualfollow_get(&query).await?;
 
 **方法名 :** `user_event`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_event(&query).await?;
@@ -787,7 +834,8 @@ let result = client.user_event(&query).await?;
 
 ---
 
-#### 获取用户播放记录
+<a id="method-user_record"></a>
+### user_record - 获取用户播放记录
 
 说明 : 登录后调用此接口，传入用户 id，可获取用户播放记录
 
@@ -797,7 +845,7 @@ let result = client.user_event(&query).await?;
 
 **方法名 :** `user_record`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("uid", "32953014")
@@ -807,7 +855,8 @@ let result = client.user_record(&query).await?;
 
 ---
 
-#### 获取用户电台
+<a id="method-user_dj"></a>
+### user_dj - 获取用户电台
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户电台
 
@@ -815,7 +864,7 @@ let result = client.user_record(&query).await?;
 
 **方法名 :** `user_dj`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_dj(&query).await?;
@@ -823,7 +872,8 @@ let result = client.user_dj(&query).await?;
 
 ---
 
-#### 用户电台
+<a id="method-user_audio"></a>
+### user_audio - 用户电台
 
 说明 : 调用此接口，传入用户 id 可获取用户创建的电台
 
@@ -831,7 +881,7 @@ let result = client.user_dj(&query).await?;
 
 **方法名 :** `user_audio`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_audio(&query).await?;
@@ -839,7 +889,8 @@ let result = client.user_audio(&query).await?;
 
 ---
 
-#### 获取用户历史评论
+<a id="method-user_comment_history"></a>
+### user_comment_history - 获取用户历史评论
 
 说明 : 登录后调用此接口，传入用户 id，可以获取用户历史评论
 
@@ -849,7 +900,7 @@ let result = client.user_audio(&query).await?;
 
 **方法名 :** `user_comment_history`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_comment_history(&query).await?;
@@ -857,7 +908,8 @@ let result = client.user_comment_history(&query).await?;
 
 ---
 
-#### 用户徽章
+<a id="method-user_medal"></a>
+### user_medal - 用户徽章
 
 说明 : 调用此接口，传入用户 id，获取用户徽章
 
@@ -865,7 +917,7 @@ let result = client.user_comment_history(&query).await?;
 
 **方法名 :** `user_medal`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_medal(&query).await?;
@@ -873,7 +925,8 @@ let result = client.user_medal(&query).await?;
 
 ---
 
-#### 用户状态
+<a id="method-user_social_status"></a>
+### user_social_status - 用户状态
 
 说明 : 登录后调用此接口，传入用户 id，获取用户社交状态
 
@@ -881,7 +934,7 @@ let result = client.user_medal(&query).await?;
 
 **方法名 :** `user_social_status`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.user_social_status(&query).await?;
@@ -889,13 +942,14 @@ let result = client.user_social_status(&query).await?;
 
 ---
 
-#### 用户状态 - 编辑
+<a id="method-user_social_status_edit"></a>
+### user_social_status_edit - 用户状态 - 编辑
 
 说明 : 登录后调用此接口，编辑当前用户状态，所需参数可在 `user_social_status_support` 接口获取
 
 **方法名 :** `user_social_status_edit`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_social_status_edit(&query).await?;
@@ -903,13 +957,14 @@ let result = client.user_social_status_edit(&query).await?;
 
 ---
 
-#### 用户状态 - 相同状态的用户
+<a id="method-user_social_status_rcmd"></a>
+### user_social_status_rcmd - 用户状态 - 相同状态的用户
 
 说明 : 登录后调用此接口，获取相同状态的用户
 
 **方法名 :** `user_social_status_rcmd`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_social_status_rcmd(&query).await?;
@@ -917,13 +972,14 @@ let result = client.user_social_status_rcmd(&query).await?;
 
 ---
 
-#### 用户状态 - 支持设置的状态
+<a id="method-user_social_status_support"></a>
+### user_social_status_support - 用户状态 - 支持设置的状态
 
 说明 : 登录后调用此接口，获取支持设置的状态
 
 **方法名 :** `user_social_status_support`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_social_status_support(&query).await?;
@@ -931,7 +987,8 @@ let result = client.user_social_status_support(&query).await?;
 
 ---
 
-#### 关注/取消关注用户
+<a id="method-follow"></a>
+### follow - 关注/取消关注用户
 
 说明 : 登录后调用此接口，传入用户 id 和操作 t，可关注/取消关注用户
 
@@ -939,7 +996,7 @@ let result = client.user_social_status_support(&query).await?;
 
 **方法名 :** `follow`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "32953014")
@@ -949,13 +1006,14 @@ let result = client.follow(&query).await?;
 
 ---
 
-#### 私信和通知接口
+<a id="method-pl_count"></a>
+### pl_count - 私信和通知接口
 
 说明 : 登录后调用此接口，可获取私信和通知数量信息
 
 **方法名 :** `pl_count`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.pl_count(&query).await?;
@@ -963,13 +1021,14 @@ let result = client.pl_count(&query).await?;
 
 ---
 
-#### 国家编码列表
+<a id="method-countries_code_list"></a>
+### countries_code_list - 国家编码列表
 
 说明 : 调用此接口，可获取国家编码列表
 
 **方法名 :** `countries_code_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.countries_code_list(&query).await?;
@@ -977,13 +1036,14 @@ let result = client.countries_code_list(&query).await?;
 
 ---
 
-#### 设置
+<a id="method-setting"></a>
+### setting - 设置
 
 说明 : 登录后调用此接口，可获取用户设置
 
 **方法名 :** `setting`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.setting(&query).await?;
@@ -991,7 +1051,8 @@ let result = client.setting(&query).await?;
 
 ---
 
-#### 根据 nickname 获取 userid
+<a id="method-get_userids"></a>
+### get_userids - 根据 nickname 获取 userid
 
 说明 : 使用此接口，传入用户昵称，可获取对应的用户 id，支持批量获取，多个昵称用分号(;)隔开
 
@@ -999,7 +1060,7 @@ let result = client.setting(&query).await?;
 
 **方法名 :** `get_userids`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("nicknames", "test1;test2");
 let result = client.get_userids(&query).await?;
@@ -1007,7 +1068,8 @@ let result = client.get_userids(&query).await?;
 
 ---
 
-#### 修改动态可见权限
+<a id="method-event_privacy"></a>
+### event_privacy - 修改动态可见权限
 
 说明 : 登录后修改本人动态的可见权限
 
@@ -1015,7 +1077,7 @@ let result = client.get_userids(&query).await?;
 
 **方法名 :** `event_privacy`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("evId", "A_EV_2_xxx")
@@ -1025,7 +1087,8 @@ let result = client.event_privacy(&query).await?;
 
 ---
 
-#### 获取当前用户全部动态
+<a id="method-user_event_all"></a>
+### user_event_all - 获取当前用户全部动态
 
 说明 : 登录后自动翻页获取当前用户可枚举的全部动态，并按动态 id 去重。返回体包含 `events`、`retrievedCount`、`unavailableCount`、`sizeMismatch`、`pageCount`、`more`、`lasttime`。
 
@@ -1033,7 +1096,7 @@ let result = client.event_privacy(&query).await?;
 
 **方法名 :** `user_event_all`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.user_event_all(&query).await?;
@@ -1042,11 +1105,13 @@ let result = client.user_event_all(&query).await?;
 ---
 
 
-### 歌曲相关
+<a id="cat-song"></a>
+## 歌曲相关
 
 ---
 
-#### 获取歌曲详情
+<a id="method-song_detail"></a>
+### song_detail - 获取歌曲详情
 
 说明 : 调用此接口，传入音乐 id（支持多个 id，用逗号隔开），可获得歌曲详情
 
@@ -1054,7 +1119,7 @@ let result = client.user_event_all(&query).await?;
 
 **方法名 :** `song_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("ids", "347230,347231");
 let result = client.song_detail(&query).await?;
@@ -1062,7 +1127,8 @@ let result = client.song_detail(&query).await?;
 
 ---
 
-#### 获取音乐 url
+<a id="method-song_url"></a>
+### song_url - 获取音乐 url
 
 说明 : 使用歌单详情接口后，能得到的音乐的 id，但不能得到的音乐 url，调用此接口，传入的音乐 id（可多个，用逗号隔开），可以获取对应的音乐的 url，未登录状态或者非会员返回试听片段
 
@@ -1072,7 +1138,7 @@ let result = client.song_detail(&query).await?;
 
 **方法名 :** `song_url`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_url(&query).await?;
@@ -1080,7 +1146,8 @@ let result = client.song_url(&query).await?;
 
 ---
 
-#### 获取音乐 url - 新版
+<a id="method-song_url_v1"></a>
+### song_url_v1 - 获取音乐 url - 新版
 
 说明 : 使用注意事项同上
 
@@ -1092,7 +1159,7 @@ let result = client.song_url(&query).await?;
 
 **方法名 :** `song_url_v1`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "1969519579")
@@ -1102,7 +1169,8 @@ let result = client.song_url_v1(&query).await?;
 
 ---
 
-#### 302 到音乐 url - 新版
+<a id="method-song_url_v1_302"></a>
+### song_url_v1_302 - 302 到音乐 url - 新版
 
 说明 : 只允许传入单个 id，会使用 302 重定向请求到目标 url
 
@@ -1112,7 +1180,7 @@ let result = client.song_url_v1(&query).await?;
 
 **方法名 :** `song_url_v1_302`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "1969519579")
@@ -1122,13 +1190,14 @@ let result = client.song_url_v1_302(&query).await?;
 
 ---
 
-#### 歌曲播放链接 (ncmget)
+<a id="method-song_url_ncmget"></a>
+### song_url_ncmget - 歌曲播放链接 (ncmget)
 
 说明 : ncmget 占位接口，始终返回空数据
 
 **方法名 :** `song_url_ncmget`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.song_url_ncmget(&query).await?;
@@ -1136,7 +1205,8 @@ let result = client.song_url_ncmget(&query).await?;
 
 ---
 
-#### 直接获取灰色歌曲链接
+<a id="method-song_url_match"></a>
+### song_url_match - 直接获取灰色歌曲链接
 
 说明 : 网易云歌曲解灰功能。注意：此功能依赖外部 unblockmusic-utils，Rust SDK 暂不支持，调用会返回不支持的错误。
 
@@ -1146,7 +1216,7 @@ let result = client.song_url_ncmget(&query).await?;
 
 **方法名 :** `song_url_match`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_url_match(&query).await?;
@@ -1155,7 +1225,8 @@ let result = client.song_url_match(&query).await?;
 
 ---
 
-#### 获取客户端歌曲下载 url
+<a id="method-song_download_url"></a>
+### song_download_url - 获取客户端歌曲下载 url
 
 说明 : 使用 `/song/url` 接口获取的是歌曲试听 url，但存在部分歌曲在非 VIP 账号上可以下载无损音质而不能试听无损音质，使用此接口可使非 VIP 账号获取这些歌曲的无损音频
 
@@ -1165,7 +1236,7 @@ let result = client.song_url_match(&query).await?;
 
 **方法名 :** `song_download_url`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_download_url(&query).await?;
@@ -1173,7 +1244,8 @@ let result = client.song_download_url(&query).await?;
 
 ---
 
-#### 获取客户端歌曲下载链接 - 新版
+<a id="method-song_download_url_v1"></a>
+### song_download_url_v1 - 获取客户端歌曲下载链接 - 新版
 
 说明 : 使用 `song_url_v1` 接口获取的是歌曲试听 url，非 VIP 账号最高只能获取极高音质，但免费类型的歌曲（fee == 0）使用本接口可最高获取 Hi-Res 音质的 url
 
@@ -1183,7 +1255,7 @@ let result = client.song_download_url(&query).await?;
 
 **方法名 :** `song_download_url_v1`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "2155423468")
@@ -1193,7 +1265,8 @@ let result = client.song_download_url_v1(&query).await?;
 
 ---
 
-#### 音乐是否可用
+<a id="method-check_music"></a>
+### check_music - 音乐是否可用
 
 说明 : 调用此接口，传入歌曲 id，可获取音乐是否可用，返回 `{ success: true, message: 'ok' }` 或者 `{ success: false, message: '亲爱的,暂无版权' }`
 
@@ -1203,7 +1276,7 @@ let result = client.song_download_url_v1(&query).await?;
 
 **方法名 :** `check_music`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.check_music(&query).await?;
@@ -1211,7 +1284,8 @@ let result = client.check_music(&query).await?;
 
 ---
 
-#### 获取歌词
+<a id="method-lyric"></a>
+### lyric - 获取歌词
 
 说明 : 调用此接口，传入音乐 id 可获得对应音乐的歌词（不需要登录）
 
@@ -1219,7 +1293,7 @@ let result = client.check_music(&query).await?;
 
 **方法名 :** `lyric`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "33894312");
 let result = client.lyric(&query).await?;
@@ -1227,7 +1301,8 @@ let result = client.lyric(&query).await?;
 
 ---
 
-#### 获取逐字歌词
+<a id="method-lyric_new"></a>
+### lyric_new - 获取逐字歌词
 
 说明 : 此接口的 `yrc` 字段即为逐字歌词（可能有歌曲不包含逐字歌词）
 
@@ -1235,7 +1310,7 @@ let result = client.lyric(&query).await?;
 
 **方法名 :** `lyric_new`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1824020871");
 let result = client.lyric_new(&query).await?;
@@ -1243,7 +1318,8 @@ let result = client.lyric_new(&query).await?;
 
 ---
 
-#### 喜欢音乐
+<a id="method-like"></a>
+### like - 喜欢音乐
 
 说明 : 调用此接口，传入音乐 id，可喜欢该音乐
 
@@ -1253,7 +1329,7 @@ let result = client.lyric_new(&query).await?;
 
 **方法名 :** `like`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "347230");
 let result = client.like(&query).await?;
@@ -1261,7 +1337,8 @@ let result = client.like(&query).await?;
 
 ---
 
-#### 喜欢音乐列表
+<a id="method-likelist"></a>
+### likelist - 喜欢音乐列表
 
 说明 : 调用此接口，传入用户 id，可获取已喜欢音乐 id 列表（id 数组）
 
@@ -1269,7 +1346,7 @@ let result = client.like(&query).await?;
 
 **方法名 :** `likelist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("uid", "32953014");
 let result = client.likelist(&query).await?;
@@ -1277,7 +1354,8 @@ let result = client.likelist(&query).await?;
 
 ---
 
-#### 歌曲是否喜爱
+<a id="method-song_like_check"></a>
+### song_like_check - 歌曲是否喜爱
 
 说明 : 调用此接口，传入歌曲 id 列表，可检查歌曲是否被喜爱
 
@@ -1285,7 +1363,7 @@ let result = client.likelist(&query).await?;
 
 **方法名 :** `song_like_check`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("ids", "[2058263032,1497529942]");
 let result = client.song_like_check(&query).await?;
@@ -1293,7 +1371,8 @@ let result = client.song_like_check(&query).await?;
 
 ---
 
-#### 听歌打卡
+<a id="method-scrobble"></a>
+### scrobble - 听歌打卡
 
 说明 : 调用此接口，传入音乐 id，来源 id，歌曲时间 time，更新听歌排行数据
 
@@ -1303,7 +1382,7 @@ let result = client.song_like_check(&query).await?;
 
 **方法名 :** `scrobble`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "518066366")
@@ -1314,7 +1393,8 @@ let result = client.scrobble(&query).await?;
 
 ---
 
-#### 调整歌曲顺序
+<a id="method-song_order_update"></a>
+### song_order_update - 调整歌曲顺序
 
 说明 : 登录后调用此接口，可以根据歌曲 id 顺序调整歌曲顺序
 
@@ -1322,7 +1402,7 @@ let result = client.scrobble(&query).await?;
 
 **方法名 :** `song_order_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("pid", "2039116066")
@@ -1332,7 +1412,8 @@ let result = client.song_order_update(&query).await?;
 
 ---
 
-#### 副歌时间
+<a id="method-song_chorus"></a>
+### song_chorus - 副歌时间
 
 说明 : 调用此接口，传入歌曲 id，获取副歌时间
 
@@ -1340,7 +1421,7 @@ let result = client.song_order_update(&query).await?;
 
 **方法名 :** `song_chorus`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2058263032");
 let result = client.song_chorus(&query).await?;
@@ -1348,7 +1429,8 @@ let result = client.song_chorus(&query).await?;
 
 ---
 
-#### 歌曲百科摘要
+<a id="method-song_wiki_summary"></a>
+### song_wiki_summary - 歌曲百科摘要
 
 说明 : 调用此接口，传入歌曲 id，可获取歌曲百科摘要信息
 
@@ -1356,7 +1438,7 @@ let result = client.song_chorus(&query).await?;
 
 **方法名 :** `song_wiki_summary`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1958384591");
 let result = client.song_wiki_summary(&query).await?;
@@ -1364,7 +1446,8 @@ let result = client.song_wiki_summary(&query).await?;
 
 ---
 
-#### 歌曲音质详情
+<a id="method-song_music_detail"></a>
+### song_music_detail - 歌曲音质详情
 
 说明 : 调用此接口获取歌曲各个音质的文件信息，与获取歌曲详情接口相比，多出高清环绕声、沉浸环绕声、超清母带等音质的信息
 
@@ -1372,7 +1455,7 @@ let result = client.song_wiki_summary(&query).await?;
 
 **方法名 :** `song_music_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2082700997");
 let result = client.song_music_detail(&query).await?;
@@ -1380,7 +1463,8 @@ let result = client.song_music_detail(&query).await?;
 
 ---
 
-#### 歌曲红心数量
+<a id="method-song_red_count"></a>
+### song_red_count - 歌曲红心数量
 
 说明 : 调用此接口获取歌曲的红心用户数量
 
@@ -1388,7 +1472,7 @@ let result = client.song_music_detail(&query).await?;
 
 **方法名 :** `song_red_count`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "186016");
 let result = client.song_red_count(&query).await?;
@@ -1396,7 +1480,8 @@ let result = client.song_red_count(&query).await?;
 
 ---
 
-#### 歌曲动态封面
+<a id="method-song_dynamic_cover"></a>
+### song_dynamic_cover - 歌曲动态封面
 
 说明 : 登录后调用此接口，传入歌曲 id，获取歌曲动态封面
 
@@ -1404,7 +1489,7 @@ let result = client.song_red_count(&query).await?;
 
 **方法名 :** `song_dynamic_cover`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2101179024");
 let result = client.song_dynamic_cover(&query).await?;
@@ -1412,7 +1497,8 @@ let result = client.song_dynamic_cover(&query).await?;
 
 ---
 
-#### 会员下载歌曲记录
+<a id="method-song_downlist"></a>
+### song_downlist - 会员下载歌曲记录
 
 说明 : 调用此接口，可获得当前账号会员下载歌曲记录
 
@@ -1420,7 +1506,7 @@ let result = client.song_dynamic_cover(&query).await?;
 
 **方法名 :** `song_downlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.song_downlist(&query).await?;
@@ -1428,7 +1514,8 @@ let result = client.song_downlist(&query).await?;
 
 ---
 
-#### 会员本月下载歌曲记录
+<a id="method-song_monthdownlist"></a>
+### song_monthdownlist - 会员本月下载歌曲记录
 
 说明 : 调用此接口，可获得当前账号会员本月下载歌曲记录
 
@@ -1436,7 +1523,7 @@ let result = client.song_downlist(&query).await?;
 
 **方法名 :** `song_monthdownlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.song_monthdownlist(&query).await?;
@@ -1444,7 +1531,8 @@ let result = client.song_monthdownlist(&query).await?;
 
 ---
 
-#### 已购买单曲下载记录
+<a id="method-song_singledownlist"></a>
+### song_singledownlist - 已购买单曲下载记录
 
 说明 : 调用此接口，可获得当前账号已购买单曲下载记录
 
@@ -1452,7 +1540,7 @@ let result = client.song_monthdownlist(&query).await?;
 
 **方法名 :** `song_singledownlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.song_singledownlist(&query).await?;
@@ -1460,7 +1548,8 @@ let result = client.song_singledownlist(&query).await?;
 
 ---
 
-#### 已购单曲
+<a id="method-song_purchased"></a>
+### song_purchased - 已购单曲
 
 说明 : 登录后调用此接口可获取已购买的单曲
 
@@ -1468,7 +1557,7 @@ let result = client.song_singledownlist(&query).await?;
 
 **方法名 :** `song_purchased`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("limit", "10");
 let result = client.song_purchased(&query).await?;
@@ -1476,7 +1565,8 @@ let result = client.song_purchased(&query).await?;
 
 ---
 
-#### 歌词摘录 - 歌词摘录信息
+<a id="method-song_lyrics_mark"></a>
+### song_lyrics_mark - 歌词摘录 - 歌词摘录信息
 
 说明 : 登录后调用此接口，传入歌曲 id，获取歌词摘录信息
 
@@ -1484,7 +1574,7 @@ let result = client.song_purchased(&query).await?;
 
 **方法名 :** `song_lyrics_mark`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2058263032");
 let result = client.song_lyrics_mark(&query).await?;
@@ -1492,7 +1582,8 @@ let result = client.song_lyrics_mark(&query).await?;
 
 ---
 
-#### 歌词摘录 - 添加/修改摘录歌词
+<a id="method-song_lyrics_mark_add"></a>
+### song_lyrics_mark_add - 歌词摘录 - 添加/修改摘录歌词
 
 说明 : 登录后调用此接口，传入歌曲 id，可以添加/修改摘录歌词
 
@@ -1502,7 +1593,7 @@ let result = client.song_lyrics_mark(&query).await?;
 
 **方法名 :** `song_lyrics_mark_add`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "2058263032")
@@ -1512,7 +1603,8 @@ let result = client.song_lyrics_mark_add(&query).await?;
 
 ---
 
-#### 歌词摘录 - 删除摘录歌词
+<a id="method-song_lyrics_mark_del"></a>
+### song_lyrics_mark_del - 歌词摘录 - 删除摘录歌词
 
 说明 : 登录后调用此接口，传入摘录歌词 id，删除摘录歌词
 
@@ -1520,7 +1612,7 @@ let result = client.song_lyrics_mark_add(&query).await?;
 
 **方法名 :** `song_lyrics_mark_del`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2083850");
 let result = client.song_lyrics_mark_del(&query).await?;
@@ -1528,7 +1620,8 @@ let result = client.song_lyrics_mark_del(&query).await?;
 
 ---
 
-#### 歌词摘录 - 我的歌词本
+<a id="method-song_lyrics_mark_user_page"></a>
+### song_lyrics_mark_user_page - 歌词摘录 - 我的歌词本
 
 说明 : 登录后调用此接口，获取我的歌词本
 
@@ -1536,7 +1629,7 @@ let result = client.song_lyrics_mark_del(&query).await?;
 
 **方法名 :** `song_lyrics_mark_user_page`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.song_lyrics_mark_user_page(&query).await?;
@@ -1544,7 +1637,8 @@ let result = client.song_lyrics_mark_user_page(&query).await?;
 
 ---
 
-#### 听歌识曲
+<a id="method-audio_match"></a>
+### audio_match - 听歌识曲
 
 说明 : 使用此接口，上传音频文件或者麦克风采集声音可识别对应歌曲信息
 
@@ -1552,7 +1646,7 @@ let result = client.song_lyrics_mark_user_page(&query).await?;
 
 **方法名 :** `audio_match`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("duration", "30")
@@ -1562,7 +1656,8 @@ let result = client.audio_match(&query).await?;
 
 ---
 
-#### 红心/取消红心歌曲 v1
+<a id="method-like_v1"></a>
+### like_v1 - 红心/取消红心歌曲 v1
 
 说明 : 新版红心接口，使用 xeapi 通道和 v3 反作弊 token
 
@@ -1572,7 +1667,7 @@ let result = client.audio_match(&query).await?;
 
 **方法名 :** `like_v1`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "347230");
 let result = client.like_v1(&query).await?;
@@ -1584,7 +1679,8 @@ let result = client.like_v1(&query).await?;
 
 ---
 
-#### 喜欢歌曲（旧版）
+<a id="method-song_like"></a>
+### song_like - 喜欢歌曲（旧版）
 
 说明 : 旧版喜欢/取消喜欢歌曲接口（weapi）。新代码建议使用 `like` 或 `like_v1`
 
@@ -1594,7 +1690,7 @@ let result = client.like_v1(&query).await?;
 
 **方法名 :** `song_like`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "347230").param("uid", "32953014");
 let result = client.song_like(&query).await?;
@@ -1602,7 +1698,8 @@ let result = client.song_like(&query).await?;
 
 ---
 
-#### 提交歌曲播放状态
+<a id="method-relay_play_state_submit"></a>
+### relay_play_state_submit - 提交歌曲播放状态
 
 说明 : 上报歌曲播放状态，用于最近播放、播放进度同步等场景
 
@@ -1612,7 +1709,7 @@ let result = client.song_like(&query).await?;
 
 **方法名 :** `relay_play_state_submit`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "1969519579")
@@ -1623,7 +1720,8 @@ let result = client.relay_play_state_submit(&query).await?;
 
 ---
 
-#### 听歌打卡 v1（NCBL 加密）
+<a id="method-scrobble_v1"></a>
+### scrobble_v1 - 听歌打卡 v1（NCBL 加密）
 
 说明 : 仿桌面客户端 PLV/PLD 上报的听歌打卡，使用 NCBL 加密上传。需要登录，且 query 中必须携带包含 `MUSIC_U` 的 cookie。PLV 与 PLD 分两次上传。
 
@@ -1633,7 +1731,7 @@ let result = client.relay_play_state_submit(&query).await?;
 
 **方法名 :** `scrobble_v1`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "1969519579")
@@ -1645,7 +1743,8 @@ let result = client.scrobble_v1(&query).await?;
 
 ---
 
-#### 灰色歌曲其他版本推荐
+<a id="method-song_copyright_rcmd"></a>
+### song_copyright_rcmd - 灰色歌曲其他版本推荐
 
 说明 : 获取灰色歌曲可播放的其他版本推荐
 
@@ -1653,7 +1752,7 @@ let result = client.scrobble_v1(&query).await?;
 
 **方法名 :** `song_copyright_rcmd`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_copyright_rcmd(&query).await?;
@@ -1661,7 +1760,8 @@ let result = client.song_copyright_rcmd(&query).await?;
 
 ---
 
-#### 歌曲创作者信息
+<a id="method-song_creators"></a>
+### song_creators - 歌曲创作者信息
 
 说明 : 获取歌曲的创作者（作曲、作词、编曲等）信息
 
@@ -1669,7 +1769,7 @@ let result = client.song_copyright_rcmd(&query).await?;
 
 **方法名 :** `song_creators`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_creators(&query).await?;
@@ -1677,7 +1777,8 @@ let result = client.song_creators(&query).await?;
 
 ---
 
-#### 插播相似歌曲
+<a id="method-song_simi_get"></a>
+### song_simi_get - 插播相似歌曲
 
 说明 : 获取播放页插播推荐使用的相似歌曲
 
@@ -1685,7 +1786,7 @@ let result = client.song_creators(&query).await?;
 
 **方法名 :** `song_simi_get`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_simi_get(&query).await?;
@@ -1693,7 +1794,8 @@ let result = client.song_simi_get(&query).await?;
 
 ---
 
-#### 歌曲百科
+<a id="method-song_wiki_info"></a>
+### song_wiki_info - 歌曲百科
 
 说明 : 获取歌曲百科信息
 
@@ -1701,7 +1803,7 @@ let result = client.song_simi_get(&query).await?;
 
 **方法名 :** `song_wiki_info`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1969519579");
 let result = client.song_wiki_info(&query).await?;
@@ -1710,11 +1812,13 @@ let result = client.song_wiki_info(&query).await?;
 ---
 
 
-### 搜索相关
+<a id="cat-search"></a>
+## 搜索相关
 
 ---
 
-#### 搜索
+<a id="method-search"></a>
+### search - 搜索
 
 说明 : 调用此接口，传入搜索关键词可以搜索该音乐 / 专辑 / 歌手 / 歌单 / 用户，关键词可以多个，以空格隔开（不需要登录），可通过 `song_url` 接口传入歌曲 id 获取具体的播放链接
 
@@ -1724,7 +1828,7 @@ let result = client.song_wiki_info(&query).await?;
 
 **方法名 :** `search`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("keywords", "海阔天空")
@@ -1735,7 +1839,8 @@ let result = client.search(&query).await?;
 
 ---
 
-#### 搜索（综合）
+<a id="method-cloudsearch"></a>
+### cloudsearch - 搜索（综合）
 
 说明 : 调用此接口，传入搜索关键词可以搜索该音乐 / 专辑 / 歌手 / 歌单 / 用户（返回结果更全面）
 
@@ -1745,7 +1850,7 @@ let result = client.search(&query).await?;
 
 **方法名 :** `cloudsearch`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("keywords", "海阔天空");
@@ -1754,13 +1859,14 @@ let result = client.cloudsearch(&query).await?;
 
 ---
 
-#### 默认搜索关键词
+<a id="method-search_default"></a>
+### search_default - 默认搜索关键词
 
 说明 : 调用此接口，可获取默认搜索关键词
 
 **方法名 :** `search_default`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.search_default(&query).await?;
@@ -1768,13 +1874,14 @@ let result = client.search_default(&query).await?;
 
 ---
 
-#### 热搜列表(简略)
+<a id="method-search_hot"></a>
+### search_hot - 热搜列表(简略)
 
 说明 : 调用此接口，可获取热门搜索列表
 
 **方法名 :** `search_hot`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.search_hot(&query).await?;
@@ -1782,13 +1889,14 @@ let result = client.search_hot(&query).await?;
 
 ---
 
-#### 热搜列表(详细)
+<a id="method-search_hot_detail"></a>
+### search_hot_detail - 热搜列表(详细)
 
 说明 : 调用此接口，可获取热门搜索列表（详细版）
 
 **方法名 :** `search_hot_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.search_hot_detail(&query).await?;
@@ -1796,7 +1904,8 @@ let result = client.search_hot_detail(&query).await?;
 
 ---
 
-#### 搜索建议
+<a id="method-search_suggest"></a>
+### search_suggest - 搜索建议
 
 说明 : 调用此接口，传入搜索关键词可获得搜索建议，搜索结果同时包含单曲、歌手、歌单信息
 
@@ -1806,7 +1915,7 @@ let result = client.search_hot_detail(&query).await?;
 
 **方法名 :** `search_suggest`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("keywords", "海阔天空");
 let result = client.search_suggest(&query).await?;
@@ -1814,7 +1923,8 @@ let result = client.search_suggest(&query).await?;
 
 ---
 
-#### 搜索多重匹配
+<a id="method-search_multimatch"></a>
+### search_multimatch - 搜索多重匹配
 
 说明 : 调用此接口，传入搜索关键词可获得搜索结果
 
@@ -1822,7 +1932,7 @@ let result = client.search_suggest(&query).await?;
 
 **方法名 :** `search_multimatch`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("keywords", "海阔天空");
 let result = client.search_multimatch(&query).await?;
@@ -1830,7 +1940,8 @@ let result = client.search_multimatch(&query).await?;
 
 ---
 
-#### 本地歌曲文件匹配网易云歌曲信息
+<a id="method-search_match"></a>
+### search_match - 本地歌曲文件匹配网易云歌曲信息
 
 说明 : 调用此接口可以为本地歌曲文件搜索匹配歌曲 ID、专辑封面等信息
 
@@ -1838,7 +1949,7 @@ let result = client.search_multimatch(&query).await?;
 
 **方法名 :** `search_match`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("title", "富士山下")
@@ -1851,7 +1962,8 @@ let result = client.search_match(&query).await?;
 
 ---
 
-#### 搜索建议（PC 端）
+<a id="method-search_suggest_pc"></a>
+### search_suggest_pc - 搜索建议（PC 端）
 
 说明 : PC 端搜索建议接口
 
@@ -1859,7 +1971,7 @@ let result = client.search_match(&query).await?;
 
 **方法名 :** `search_suggest_pc`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("keyword", "周杰伦");
 let result = client.search_suggest_pc(&query).await?;
@@ -1868,6 +1980,7 @@ let result = client.search_suggest_pc(&query).await?;
 ---
 
 
+<a id="method-search_suggest_mobile"></a>
 ### search_suggest_mobile - 搜索联想词（App 移动端）
 
 说明 : 获取 App 搜索框下拉联想结果：第 0 条为直 hit 歌曲卡，其后为联想词列表，包含高亮分段信息
@@ -1885,6 +1998,7 @@ let result = client.search_suggest_mobile(&query).await.unwrap();
 
 ---
 
+<a id="method-search_song_list_page"></a>
 ### search_song_list_page - 新版单曲搜索（分页）
 
 说明 : 使用 v9.6.13 客户端新版单曲搜索接口，返回 `resources` 数组与 `hasMore` 分页标记
@@ -1906,6 +2020,7 @@ let result = client.search_song_list_page(&query).await.unwrap();
 
 ---
 
+<a id="method-search_lyric"></a>
 ### search_lyric - 按歌词搜索
 
 说明 : 传入歌词片段搜索包含该歌词的歌曲，返回 `resources` 数组（含匹配歌词行、高亮文本和歌曲详情）
@@ -1925,6 +2040,7 @@ let result = client.search_lyric(&query).await.unwrap();
 
 ---
 
+<a id="method-event_search"></a>
 ### event_search - 动态搜索
 
 说明 : 传入关键词搜索用户发布的动态
@@ -1945,9 +2061,11 @@ let result = client.event_search(&query).await.unwrap();
 ---
 
 
+<a id="cat-playlist"></a>
 ## 歌单相关
 
-### 新建歌单
+<a id="method-playlist_create"></a>
+### playlist_create - 新建歌单
 
 说明 : 调用此接口 , 传入歌单名字可新建歌单
 
@@ -1959,7 +2077,7 @@ let result = client.event_search(&query).await.unwrap();
 
 **方法名 :** `playlist_create`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("name", "测试歌单");
 let result = client.playlist_create(&query).await?;
@@ -1969,7 +2087,8 @@ let query = Query::new().param("name", "test").param("type", "VIDEO");
 let result = client.playlist_create(&query).await?;
 ```
 
-### 删除歌单
+<a id="method-playlist_delete"></a>
+### playlist_delete - 删除歌单
 
 说明 : 调用此接口 , 传入歌单 id 可删除歌单
 
@@ -1977,13 +2096,14 @@ let result = client.playlist_create(&query).await?;
 
 **方法名 :** `playlist_delete`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2947311456");
 let result = client.playlist_delete(&query).await?;
 ```
 
-### 收藏/取消收藏歌单
+<a id="method-playlist_subscribe"></a>
+### playlist_subscribe - 收藏/取消收藏歌单
 
 说明 : 调用此接口 , 传入类型和歌单 id 可收藏歌单或者取消收藏歌单
 
@@ -1993,13 +2113,14 @@ let result = client.playlist_delete(&query).await?;
 
 **方法名 :** `playlist_subscribe`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("t", "1").param("id", "106697785");
 let result = client.playlist_subscribe(&query).await?;
 ```
 
-### 歌单收藏者
+<a id="method-playlist_subscribers"></a>
+### playlist_subscribers - 歌单收藏者
 
 说明 : 调用此接口 , 传入歌单 id 可获取歌单的所有收藏者
 
@@ -2011,13 +2132,14 @@ let result = client.playlist_subscribe(&query).await?;
 
 **方法名 :** `playlist_subscribers`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "544215255").param("limit", "30");
 let result = client.playlist_subscribers(&query).await?;
 ```
 
-### 获取歌单详情
+<a id="method-playlist_detail"></a>
+### playlist_detail - 获取歌单详情
 
 说明 : 歌单能看到歌单名字, 但看不到具体歌单内容 , 调用此接口 , 传入歌单 id, 可以获取对应歌单内的所有的音乐(未登录状态只能获取不完整的歌单,登录后是完整的)，但是返回的 trackIds 是完整的，tracks 则是不完整的，可拿全部 trackIds 请求一次 `song/detail` 接口获取所有歌曲的详情
 
@@ -2027,13 +2149,14 @@ let result = client.playlist_subscribers(&query).await?;
 
 **方法名 :** `playlist_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616");
 let result = client.playlist_detail(&query).await?;
 ```
 
-### 歌单详情动态
+<a id="method-playlist_detail_dynamic"></a>
+### playlist_detail_dynamic - 歌单详情动态
 
 说明 : 调用后可获取歌单详情动态部分,如评论数,是否收藏,播放数
 
@@ -2041,13 +2164,14 @@ let result = client.playlist_detail(&query).await?;
 
 **方法名 :** `playlist_detail_dynamic`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616");
 let result = client.playlist_detail_dynamic(&query).await?;
 ```
 
-### 相关歌单推荐
+<a id="method-playlist_detail_rcmd_get"></a>
+### playlist_detail_rcmd_get - 相关歌单推荐
 
 说明 : 调用此接口, 传入歌单 id, 获取相关歌单推荐
 
@@ -2055,13 +2179,14 @@ let result = client.playlist_detail_dynamic(&query).await?;
 
 **方法名 :** `playlist_detail_rcmd_get`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "8039587836");
 let result = client.playlist_detail_rcmd_get(&query).await?;
 ```
 
-### 获取歌单所有歌曲
+<a id="method-playlist_track_all"></a>
+### playlist_track_all - 获取歌单所有歌曲
 
 说明 : 由于网易云接口限制，歌单详情只会提供 10 首歌，通过调用此接口，传入对应的歌单 `id`，即可获得对应的所有歌曲
 
@@ -2073,13 +2198,14 @@ let result = client.playlist_detail_rcmd_get(&query).await?;
 
 **方法名 :** `playlist_track_all`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616").param("limit", "10").param("offset", "0");
 let result = client.playlist_track_all(&query).await?;
 ```
 
-### 对歌单添加或删除歌曲
+<a id="method-playlist_tracks"></a>
+### playlist_tracks - 对歌单添加或删除歌曲
 
 说明 : 调用此接口 , 可以添加歌曲到歌单或者从歌单删除某首歌曲 ( 需要登录 )
 
@@ -2091,7 +2217,7 @@ let result = client.playlist_track_all(&query).await?;
 
 **方法名 :** `playlist_tracks`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("op", "add")
@@ -2100,7 +2226,8 @@ let query = Query::new()
 let result = client.playlist_tracks(&query).await?;
 ```
 
-### 收藏视频到视频歌单
+<a id="method-playlist_track_add"></a>
+### playlist_track_add - 收藏视频到视频歌单
 
 说明 : 调用此接口 , 可收藏视频到视频歌单 ( 需要登录 )
 
@@ -2110,13 +2237,14 @@ let result = client.playlist_tracks(&query).await?;
 
 **方法名 :** `playlist_track_add`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("pid", "5271999357").param("ids", "186041");
 let result = client.playlist_track_add(&query).await?;
 ```
 
-### 删除视频歌单里的视频
+<a id="method-playlist_track_delete"></a>
+### playlist_track_delete - 删除视频歌单里的视频
 
 说明 : 调用此接口 , 可删除视频歌单里的视频 ( 需要登录 )
 
@@ -2126,13 +2254,14 @@ let result = client.playlist_track_add(&query).await?;
 
 **方法名 :** `playlist_track_delete`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("pid", "5271999357").param("ids", "186041");
 let result = client.playlist_track_delete(&query).await?;
 ```
 
-### 更新歌单
+<a id="method-playlist_update"></a>
+### playlist_update - 更新歌单
 
 说明 : 登录后调用此接口,可以更新用户歌单
 
@@ -2146,7 +2275,7 @@ let result = client.playlist_track_delete(&query).await?;
 
 **方法名 :** `playlist_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "24381616")
@@ -2156,7 +2285,8 @@ let query = Query::new()
 let result = client.playlist_update(&query).await?;
 ```
 
-### 更新歌单描述
+<a id="method-playlist_desc_update"></a>
+### playlist_desc_update - 更新歌单描述
 
 说明 : 登录后调用此接口,可以单独更新用户歌单描述
 
@@ -2166,13 +2296,14 @@ let result = client.playlist_update(&query).await?;
 
 **方法名 :** `playlist_desc_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616").param("desc", "描述");
 let result = client.playlist_desc_update(&query).await?;
 ```
 
-### 更新歌单名
+<a id="method-playlist_name_update"></a>
+### playlist_name_update - 更新歌单名
 
 说明 : 登录后调用此接口,可以单独更新用户歌单名
 
@@ -2182,13 +2313,14 @@ let result = client.playlist_desc_update(&query).await?;
 
 **方法名 :** `playlist_name_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616").param("name", "歌单名");
 let result = client.playlist_name_update(&query).await?;
 ```
 
-### 更新歌单标签
+<a id="method-playlist_tags_update"></a>
+### playlist_tags_update - 更新歌单标签
 
 说明 : 登录后调用此接口,可以单独更新用户歌单标签
 
@@ -2198,13 +2330,14 @@ let result = client.playlist_name_update(&query).await?;
 
 **方法名 :** `playlist_tags_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616").param("tags", "学习");
 let result = client.playlist_tags_update(&query).await?;
 ```
 
-### 歌单封面上传
+<a id="method-playlist_cover_update"></a>
+### playlist_cover_update - 歌单封面上传
 
 说明 : 登录后调用此接口,使用 `'Content-Type': 'multipart/form-data'` 上传图片 formData(name 为'imgFile'),可更新歌单封面
 
@@ -2218,13 +2351,14 @@ let result = client.playlist_tags_update(&query).await?;
 
 **方法名 :** `playlist_cover_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "3143833470").param("imgSize", "200");
 let result = client.playlist_cover_update(&query).await?;
 ```
 
-### 调整歌单顺序
+<a id="method-playlist_order_update"></a>
+### playlist_order_update - 调整歌单顺序
 
 说明 : 登录后调用此接口,可以根据歌单 id 顺序调整歌单顺序
 
@@ -2232,13 +2366,14 @@ let result = client.playlist_cover_update(&query).await?;
 
 **方法名 :** `playlist_order_update`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("ids", "[111,222]");
 let result = client.playlist_order_update(&query).await?;
 ```
 
-### 歌单更新播放量
+<a id="method-playlist_update_playcount"></a>
+### playlist_update_playcount - 歌单更新播放量
 
 说明 : 调用后可更新歌单播放量
 
@@ -2246,37 +2381,40 @@ let result = client.playlist_order_update(&query).await?;
 
 **方法名 :** `playlist_update_playcount`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "24381616");
 let result = client.playlist_update_playcount(&query).await?;
 ```
 
-### 歌单分类
+<a id="method-playlist_catlist"></a>
+### playlist_catlist - 歌单分类
 
 说明 : 调用此接口,可获取歌单分类,包含 category 信息
 
 **方法名 :** `playlist_catlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.playlist_catlist(&query).await?;
 ```
 
-### 热门歌单分类
+<a id="method-playlist_hot"></a>
+### playlist_hot - 热门歌单分类
 
 说明 : 调用此接口,可获取歌单分类,包含 category 信息
 
 **方法名 :** `playlist_hot`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.playlist_hot(&query).await?;
 ```
 
-### 歌单分类列表
+<a id="method-playlist_category_list"></a>
+### playlist_category_list - 歌单分类列表
 
 说明 : 调用此接口,可获取歌单分类列表
 
@@ -2286,25 +2424,27 @@ let result = client.playlist_hot(&query).await?;
 
 **方法名 :** `playlist_category_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("cat", "华语").param("limit", "10");
 let result = client.playlist_category_list(&query).await?;
 ```
 
-### 精品歌单标签列表
+<a id="method-playlist_highquality_tags"></a>
+### playlist_highquality_tags - 精品歌单标签列表
 
 说明 : 调用此接口 , 可获取精品歌单标签列表
 
 **方法名 :** `playlist_highquality_tags`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.playlist_highquality_tags(&query).await?;
 ```
 
-### 公开隐私歌单
+<a id="method-playlist_privacy"></a>
+### playlist_privacy - 公开隐私歌单
 
 说明 : 可以调用此接口将当前用户的隐私歌单公开
 
@@ -2312,37 +2452,40 @@ let result = client.playlist_highquality_tags(&query).await?;
 
 **方法名 :** `playlist_privacy`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "12345678");
 let result = client.playlist_privacy(&query).await?;
 ```
 
-### 获取点赞过的视频
+<a id="method-playlist_mylike"></a>
+### playlist_mylike - 获取点赞过的视频
 
 说明 : 调用此接口, 可获取获取点赞过的视频
 
 **方法名 :** `playlist_mylike`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.playlist_mylike(&query).await?;
 ```
 
-### 最近播放的视频
+<a id="method-playlist_video_recent"></a>
+### playlist_video_recent - 最近播放的视频
 
 说明 : 调用此接口 , 可获取最近播放的视频 ( 需要登录 )
 
 **方法名 :** `playlist_video_recent`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.playlist_video_recent(&query).await?;
 ```
 
-### 歌单导入 - 元数据/文字/链接导入
+<a id="method-playlist_import_name_task_create"></a>
+### playlist_import_name_task_create - 歌单导入 - 元数据/文字/链接导入
 
 说明 : 登录后调用此接口, 支持通过元数据/文字/链接三种方式生成歌单; 三种方式不可同时调用
 
@@ -2358,14 +2501,15 @@ let result = client.playlist_video_recent(&query).await?;
 
 **方法名 :** `playlist_import_name_task_create`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 // 文字导入
 let query = Query::new().param("text", "海阔天空 Beyond");
 let result = client.playlist_import_name_task_create(&query).await?;
 ```
 
-### 歌单导入 - 任务状态
+<a id="method-playlist_import_task_status"></a>
+### playlist_import_task_status - 歌单导入 - 任务状态
 
 说明 : 调用此接口, 传入导入歌单任务 id, 获取任务状态
 
@@ -2373,13 +2517,14 @@ let result = client.playlist_import_name_task_create(&query).await?;
 
 **方法名 :** `playlist_import_task_status`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "123834369");
 let result = client.playlist_import_task_status(&query).await?;
 ```
 
-### 相关歌单
+<a id="method-related_playlist"></a>
+### related_playlist - 相关歌单
 
 说明 : 请替换为相关歌单推荐接口(`playlist_detail_rcmd_get`); 本接口通过 html 抓取内容, 现已无法抓取歌单
 
@@ -2387,7 +2532,7 @@ let result = client.playlist_import_task_status(&query).await?;
 
 **方法名 :** `related_playlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "1");
 let result = client.related_playlist(&query).await?;
@@ -2395,9 +2540,11 @@ let result = client.related_playlist(&query).await?;
 
 ---
 
+<a id="cat-comment"></a>
 ## 评论相关
 
-### 歌曲评论
+<a id="method-comment_music"></a>
+### comment_music - 歌曲评论
 
 说明 : 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该音乐的所有评论 ( 不需要登录 )
 
@@ -2411,13 +2558,14 @@ let result = client.related_playlist(&query).await?;
 
 **方法名 :** `comment_music`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "186016").param("limit", "1");
 let result = client.comment_music(&query).await?;
 ```
 
-### 专辑评论
+<a id="method-comment_album"></a>
+### comment_album - 专辑评论
 
 说明 : 调用此接口 , 传入专辑 id 和 limit 参数 , 可获得该专辑的所有评论 ( 不需要登录 )
 
@@ -2431,13 +2579,14 @@ let result = client.comment_music(&query).await?;
 
 **方法名 :** `comment_album`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "32311");
 let result = client.comment_album(&query).await?;
 ```
 
-### 歌单评论
+<a id="method-comment_playlist"></a>
+### comment_playlist - 歌单评论
 
 说明 : 调用此接口 , 传入歌单 id 和 limit 参数 , 可获得该歌单的所有评论 ( 不需要登录 )
 
@@ -2451,13 +2600,14 @@ let result = client.comment_album(&query).await?;
 
 **方法名 :** `comment_playlist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "705123491");
 let result = client.comment_playlist(&query).await?;
 ```
 
-### mv 评论
+<a id="method-comment_mv"></a>
+### comment_mv - mv 评论
 
 说明 : 调用此接口 , 传入 mv id 和 limit 参数 , 可获得该 mv 的所有评论 ( 不需要登录 )
 
@@ -2471,13 +2621,14 @@ let result = client.comment_playlist(&query).await?;
 
 **方法名 :** `comment_mv`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "5436712");
 let result = client.comment_mv(&query).await?;
 ```
 
-### 电台节目评论
+<a id="method-comment_dj"></a>
+### comment_dj - 电台节目评论
 
 说明 : 调用此接口 , 传入电台节目 id 和 limit 参数 , 可获得该电台节目的所有评论 ( 不需要登录 )
 
@@ -2491,13 +2642,14 @@ let result = client.comment_mv(&query).await?;
 
 **方法名 :** `comment_dj`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "794062371");
 let result = client.comment_dj(&query).await?;
 ```
 
-### 视频评论
+<a id="method-comment_video"></a>
+### comment_video - 视频评论
 
 说明 : 调用此接口 , 传入视频 id 和 limit 参数 , 可获得该视频的所有评论 ( 不需要登录 )
 
@@ -2511,13 +2663,14 @@ let result = client.comment_dj(&query).await?;
 
 **方法名 :** `comment_video`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "89ADDE33C0AAE8EC14B99F6750DB954D");
 let result = client.comment_video(&query).await?;
 ```
 
-### 获取动态评论
+<a id="method-comment_event"></a>
+### comment_event - 获取动态评论
 
 说明 : 登录后调用此接口 , 可以获取动态下评论
 
@@ -2525,13 +2678,14 @@ let result = client.comment_video(&query).await?;
 
 **方法名 :** `comment_event`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("threadId", "A_EV_2_6559519868_32953014");
 let result = client.comment_event(&query).await?;
 ```
 
-### 楼层评论
+<a id="method-comment_floor"></a>
+### comment_floor - 楼层评论
 
 说明 : 调用此接口 , 传入资源 parentCommentId 和资源类型 type 和资源 id 参数, 可获得该资源的歌曲楼层评论
 
@@ -2547,7 +2701,7 @@ let result = client.comment_event(&query).await?;
 
 **方法名 :** `comment_floor`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("parentCommentId", "1438569889")
@@ -2556,7 +2710,8 @@ let query = Query::new()
 let result = client.comment_floor(&query).await?;
 ```
 
-### 热门评论
+<a id="method-comment_hot"></a>
+### comment_hot - 热门评论
 
 说明 : 调用此接口 , 传入 type, 资源 id 可获得对应资源热门评论 ( 不需要登录 )
 
@@ -2572,13 +2727,14 @@ let result = client.comment_floor(&query).await?;
 
 **方法名 :** `comment_hot`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "186016").param("type", "0");
 let result = client.comment_hot(&query).await?;
 ```
 
-### 给评论点赞
+<a id="method-comment_like"></a>
+### comment_like - 给评论点赞
 
 说明 : 调用此接口 , 传入 type, 资源 id, 和评论 id cid 和 是否点赞参数 t 即可给对应评论点赞 ( 需要登录 )
 
@@ -2592,7 +2748,7 @@ let result = client.comment_hot(&query).await?;
 
 **方法名 :** `comment_like`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "29178366")
@@ -2602,7 +2758,8 @@ let query = Query::new()
 let result = client.comment_like(&query).await?;
 ```
 
-### 新版评论接口
+<a id="method-comment_new"></a>
+### comment_new - 新版评论接口
 
 说明 : 调用此接口 , 传入资源类型和资源 id,以及排序方式,可获取对应资源的评论
 
@@ -2620,7 +2777,7 @@ let result = client.comment_like(&query).await?;
 
 **方法名 :** `comment_new`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("type", "0")
@@ -2629,7 +2786,8 @@ let query = Query::new()
 let result = client.comment_new(&query).await?;
 ```
 
-### 评论抱一抱列表
+<a id="method-comment_hug_list"></a>
+### comment_hug_list - 评论抱一抱列表
 
 说明 : 调用此接口,可获取评论抱一抱列表
 
@@ -2649,7 +2807,7 @@ let result = client.comment_new(&query).await?;
 
 **方法名 :** `comment_hug_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("uid", "285516405")
@@ -2660,7 +2818,8 @@ let query = Query::new()
 let result = client.comment_hug_list(&query).await?;
 ```
 
-### 评论统计数据
+<a id="method-comment_info_list"></a>
+### comment_info_list - 评论统计数据
 
 说明 : 调用此接口 , 传入资源类型和资源 id 列表 , 可批量获取对应资源的评论统计数据 ( 不需要登录 )
 
@@ -2670,13 +2829,14 @@ let result = client.comment_hug_list(&query).await?;
 
 **方法名 :** `comment_info_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("type", "0").param("ids", "186016,347230");
 let result = client.comment_info_list(&query).await?;
 ```
 
-### 抱一抱评论
+<a id="method-hug_comment"></a>
+### hug_comment - 抱一抱评论
 
 说明 : 调用此接口,可抱一抱评论
 
@@ -2688,7 +2848,7 @@ let result = client.comment_info_list(&query).await?;
 
 **方法名 :** `hug_comment`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("uid", "285516405")
@@ -2697,13 +2857,14 @@ let query = Query::new()
 let result = client.hug_comment(&query).await?;
 ```
 
-### 云村星评馆 - 简要评论
+<a id="method-starpick_comments_summary"></a>
+### starpick_comments_summary - 云村星评馆 - 简要评论
 
 说明 : 调用此接口可以获取首页推荐的星评馆评论信息
 
 **方法名 :** `starpick_comments_summary`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.starpick_comments_summary(&query).await?;
@@ -2711,7 +2872,8 @@ let result = client.starpick_comments_summary(&query).await?;
 
 ---
 
-### 发送评论
+<a id="method-comment_add"></a>
+### comment_add - 发送评论
 
 说明 : 发送评论。使用 xeapi 通道和易盾 v3 token，需要登录
 
@@ -2731,7 +2893,8 @@ let result = client.comment_add(&query).await?;
 
 ---
 
-### 回复评论
+<a id="method-comment_reply"></a>
+### comment_reply - 回复评论
 
 说明 : 回复指定评论。使用 xeapi 通道和易盾 v3 token，需要登录
 
@@ -2754,7 +2917,8 @@ let result = client.comment_reply(&query).await?;
 
 ---
 
-### 删除评论
+<a id="method-comment_delete"></a>
+### comment_delete - 删除评论
 
 说明 : 删除自己发送的评论。使用 xeapi 通道，需要登录
 
@@ -2774,7 +2938,8 @@ let result = client.comment_delete(&query).await?;
 
 ---
 
-### 举报评论
+<a id="method-comment_report"></a>
+### comment_report - 举报评论
 
 说明 : 举报指定评论
 
@@ -2796,7 +2961,8 @@ let result = client.comment_report(&query).await?;
 
 ---
 
-### 通用评论接口
+<a id="method-comment"></a>
+### comment - 通用评论接口
 
 说明 : 兼容 Node.js 版 `/comment` 的通用入口，根据 `t` 分发到发送、删除、回复。新代码建议直接使用 `comment_add` / `comment_delete` / `comment_reply`
 
@@ -2820,6 +2986,7 @@ let result = client.comment(&query).await?;
 ---
 
 
+<a id="method-comment_default_text"></a>
 ### comment_default_text - 评论默认文案
 
 说明 : 获取指定评论区输入框的默认提示文案数组
@@ -2837,6 +3004,7 @@ let result = client.comment_default_text(&query).await.unwrap();
 
 ---
 
+<a id="method-comment_hotwall_square_info"></a>
 ### comment_hotwall_square_info - 热评墙广场信息
 
 说明 : 获取今天热评墙广场的配置信息
@@ -2855,9 +3023,11 @@ let result = client.comment_hotwall_square_info(&query).await.unwrap();
 ---
 
 
+<a id="cat-artist"></a>
 ## 歌手相关
 
-### 获取歌手单曲
+<a id="method-artists"></a>
+### artists - 获取歌手单曲
 
 说明 : 调用此接口 , 传入歌手 id, 可获得歌手部分信息和热门歌曲
 
@@ -2865,13 +3035,14 @@ let result = client.comment_hotwall_square_info(&query).await.unwrap();
 
 **方法名 :** `artists`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452");
 let result = client.artists(&query).await?;
 ```
 
-### 获取歌手详情
+<a id="method-artist_detail"></a>
+### artist_detail - 获取歌手详情
 
 说明 : 调用此接口 , 传入歌手 id, 可获得获取歌手详情
 
@@ -2879,13 +3050,14 @@ let result = client.artists(&query).await?;
 
 **方法名 :** `artist_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "11972054");
 let result = client.artist_detail(&query).await?;
 ```
 
-### 歌手详情动态
+<a id="method-artist_detail_dynamic"></a>
+### artist_detail_dynamic - 歌手详情动态
 
 说明 : 调用后可获取歌手详情动态部分,如是否关注,视频数
 
@@ -2893,13 +3065,14 @@ let result = client.artist_detail(&query).await?;
 
 **方法名 :** `artist_detail_dynamic`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "15396");
 let result = client.artist_detail_dynamic(&query).await?;
 ```
 
-### 歌手全部歌曲
+<a id="method-artist_songs"></a>
+### artist_songs - 歌手全部歌曲
 
 说明 : 调用此接口,可获取歌手全部歌曲
 
@@ -2913,13 +3086,14 @@ let result = client.artist_detail_dynamic(&query).await?;
 
 **方法名 :** `artist_songs`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452");
 let result = client.artist_songs(&query).await?;
 ```
 
-### 获取歌手专辑
+<a id="method-artist_album"></a>
+### artist_album - 获取歌手专辑
 
 说明 : 调用此接口 , 传入歌手 id, 可获得歌手专辑内容
 
@@ -2931,13 +3105,14 @@ let result = client.artist_songs(&query).await?;
 
 **方法名 :** `artist_album`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452").param("limit", "5");
 let result = client.artist_album(&query).await?;
 ```
 
-### 获取歌手描述
+<a id="method-artist_desc"></a>
+### artist_desc - 获取歌手描述
 
 说明 : 调用此接口 , 传入歌手 id, 可获得歌手描述
 
@@ -2945,13 +3120,14 @@ let result = client.artist_album(&query).await?;
 
 **方法名 :** `artist_desc`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452");
 let result = client.artist_desc(&query).await?;
 ```
 
-### 获取歌手 mv
+<a id="method-artist_mv"></a>
+### artist_mv - 获取歌手 mv
 
 说明 : 调用此接口 , 传入歌手 id, 可获得歌手 mv 信息 , 具体 mv 播放地址可调用 `mv_detail` 传入此接口获得的 mvid 来拿到
 
@@ -2959,13 +3135,14 @@ let result = client.artist_desc(&query).await?;
 
 **方法名 :** `artist_mv`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452");
 let result = client.artist_mv(&query).await?;
 ```
 
-### 歌手分类列表
+<a id="method-artist_list"></a>
+### artist_list - 歌手分类列表
 
 说明 : 调用此接口,可获取歌手分类列表
 
@@ -2981,7 +3158,7 @@ let result = client.artist_mv(&query).await?;
 
 **方法名 :** `artist_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("type", "1")
@@ -2990,7 +3167,8 @@ let query = Query::new()
 let result = client.artist_list(&query).await?;
 ```
 
-### 收藏/取消收藏歌手
+<a id="method-artist_sub"></a>
+### artist_sub - 收藏/取消收藏歌手
 
 说明 : 调用此接口,可收藏歌手
 
@@ -3000,13 +3178,14 @@ let result = client.artist_list(&query).await?;
 
 **方法名 :** `artist_sub`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452").param("t", "1");
 let result = client.artist_sub(&query).await?;
 ```
 
-### 收藏的歌手列表
+<a id="method-artist_sublist"></a>
+### artist_sublist - 收藏的歌手列表
 
 说明 : 调用此接口,可获取收藏的歌手列表
 
@@ -3016,13 +3195,14 @@ let result = client.artist_sub(&query).await?;
 
 **方法名 :** `artist_sublist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.artist_sublist(&query).await?;
 ```
 
-### 歌手热门 50 首歌曲
+<a id="method-artist_top_song"></a>
+### artist_top_song - 歌手热门 50 首歌曲
 
 说明 : 调用此接口,可获取歌手热门 50 首歌曲
 
@@ -3030,13 +3210,14 @@ let result = client.artist_sublist(&query).await?;
 
 **方法名 :** `artist_top_song`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "6452");
 let result = client.artist_top_song(&query).await?;
 ```
 
-### 歌手粉丝
+<a id="method-artist_fans"></a>
+### artist_fans - 歌手粉丝
 
 说明 : 调用此接口 , 传入歌手 id, 可获取歌手粉丝
 
@@ -3048,13 +3229,14 @@ let result = client.artist_top_song(&query).await?;
 
 **方法名 :** `artist_fans`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2116").param("limit", "10").param("offset", "0");
 let result = client.artist_fans(&query).await?;
 ```
 
-### 歌手粉丝数量
+<a id="method-artist_follow_count"></a>
+### artist_follow_count - 歌手粉丝数量
 
 说明 : 调用此接口 , 传入歌手 id, 可获取歌手粉丝数量
 
@@ -3062,13 +3244,14 @@ let result = client.artist_fans(&query).await?;
 
 **方法名 :** `artist_follow_count`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2116");
 let result = client.artist_follow_count(&query).await?;
 ```
 
-### 关注歌手新 MV
+<a id="method-artist_new_mv"></a>
+### artist_new_mv - 关注歌手新 MV
 
 说明 : 登录后调用此接口可获取关注歌手新 MV
 
@@ -3078,13 +3261,14 @@ let result = client.artist_follow_count(&query).await?;
 
 **方法名 :** `artist_new_mv`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("limit", "1");
 let result = client.artist_new_mv(&query).await?;
 ```
 
-### 关注歌手新歌
+<a id="method-artist_new_song"></a>
+### artist_new_song - 关注歌手新歌
 
 说明 : 登录后调用此接口可获取关注歌手新歌
 
@@ -3094,13 +3278,14 @@ let result = client.artist_new_mv(&query).await?;
 
 **方法名 :** `artist_new_song`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("limit", "1");
 let result = client.artist_new_song(&query).await?;
 ```
 
-### 获取歌手视频
+<a id="method-artist_video"></a>
+### artist_video - 获取歌手视频
 
 说明 : 调用此接口 , 传入歌手 id, 可获得歌手视频
 
@@ -3114,7 +3299,7 @@ let result = client.artist_new_song(&query).await?;
 
 **方法名 :** `artist_video`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "2116");
 let result = client.artist_video(&query).await?;
@@ -3122,7 +3307,8 @@ let result = client.artist_video(&query).await?;
 
 ---
 
-### 关注歌手新歌与 MV（v2）
+<a id="method-artist_new_song_mv_list_v2"></a>
+### artist_new_song_mv_list_v2 - 关注歌手新歌与 MV（v2）
 
 说明 : 登录后获取关注歌手的新歌曲和 MV
 
@@ -3141,7 +3327,8 @@ let result = client.artist_new_song_mv_list_v2(&query).await?;
 
 ---
 
-### 关注歌手新歌播放全部
+<a id="method-artist_new_song_playall"></a>
+### artist_new_song_playall - 关注歌手新歌播放全部
 
 说明 : 登录后获取所有关注歌手最近的 50 首新歌
 
@@ -3158,7 +3345,8 @@ let result = client.artist_new_song_playall(&query).await?;
 
 ---
 
-### 乐迷团详情
+<a id="method-fans_group_detail"></a>
+### fans_group_detail - 乐迷团详情
 
 说明 : 获取歌手乐迷团详情
 
@@ -3177,7 +3365,8 @@ let result = client.fans_group_detail(&query).await?;
 
 ---
 
-### 乐迷团推荐笔记
+<a id="method-fans_group_feed_recommend"></a>
+### fans_group_feed_recommend - 乐迷团推荐笔记
 
 说明 : 获取乐迷团推荐笔记列表
 
@@ -3198,7 +3387,8 @@ let result = client.fans_group_feed_recommend(&query).await?;
 
 ---
 
-### 用户所在乐迷团详情
+<a id="method-fans_group_user_group_detail"></a>
+### fans_group_user_group_detail - 用户所在乐迷团详情
 
 说明 : 获取当前用户在某乐迷团中的详情
 
@@ -3215,7 +3405,8 @@ let result = client.fans_group_user_group_detail(&query).await?;
 
 ---
 
-### 用户加入的乐迷团列表
+<a id="method-fans_group_user_groups"></a>
+### fans_group_user_groups - 用户加入的乐迷团列表
 
 说明 : 登录后获取当前用户加入的全部歌手乐迷团
 
@@ -3233,9 +3424,11 @@ let result = client.fans_group_user_groups(&query).await?;
 ---
 
 
+<a id="cat-album"></a>
 ## 专辑相关
 
-### 获取专辑内容
+<a id="method-album"></a>
+### album - 获取专辑内容
 
 说明 : 调用此接口 , 传入专辑 id, 可获得专辑内容
 
@@ -3243,13 +3436,14 @@ let result = client.fans_group_user_groups(&query).await?;
 
 **方法名 :** `album`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "32311");
 let result = client.album(&query).await?;
 ```
 
-### 数字专辑详情
+<a id="method-album_detail"></a>
+### album_detail - 数字专辑详情
 
 说明 : 调用此接口 , 传入数字专辑 id 可获取数字专辑详情(和歌单详情有差异)
 
@@ -3257,13 +3451,14 @@ let result = client.album(&query).await?;
 
 **方法名 :** `album_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "84547195");
 let result = client.album_detail(&query).await?;
 ```
 
-### 专辑动态信息
+<a id="method-album_detail_dynamic"></a>
+### album_detail_dynamic - 专辑动态信息
 
 说明 : 调用此接口 , 传入专辑 id, 可获得专辑动态信息,如是否收藏,收藏数,评论数,分享数
 
@@ -3271,13 +3466,14 @@ let result = client.album_detail(&query).await?;
 
 **方法名 :** `album_detail_dynamic`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "32311");
 let result = client.album_detail_dynamic(&query).await?;
 ```
 
-### 收藏/取消收藏专辑
+<a id="method-album_sub"></a>
+### album_sub - 收藏/取消收藏专辑
 
 说明 : 调用此接口,可收藏/取消收藏专辑
 
@@ -3287,13 +3483,14 @@ let result = client.album_detail_dynamic(&query).await?;
 
 **方法名 :** `album_sub`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "32311").param("t", "1");
 let result = client.album_sub(&query).await?;
 ```
 
-### 获取已收藏专辑列表
+<a id="method-album_sublist"></a>
+### album_sublist - 获取已收藏专辑列表
 
 说明 : 调用此接口 , 可获得已收藏专辑列表
 
@@ -3303,25 +3500,27 @@ let result = client.album_sub(&query).await?;
 
 **方法名 :** `album_sublist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.album_sublist(&query).await?;
 ```
 
-### 最新专辑
+<a id="method-album_newest"></a>
+### album_newest - 最新专辑
 
 说明 : 调用此接口 ，获取云音乐首页新碟上架数据
 
 **方法名 :** `album_newest`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.album_newest(&query).await?;
 ```
 
-### 全部新碟
+<a id="method-album_new"></a>
+### album_new - 全部新碟
 
 说明 : 登录后调用此接口 ,可获取全部新碟
 
@@ -3333,13 +3532,14 @@ let result = client.album_newest(&query).await?;
 
 **方法名 :** `album_new`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("area", "KR").param("limit", "10");
 let result = client.album_new(&query).await?;
 ```
 
-### 数字专辑-新碟上架
+<a id="method-album_list"></a>
+### album_list - 数字专辑-新碟上架
 
 说明 : 调用此接口 ,可获取数字专辑-新碟上架
 
@@ -3349,13 +3549,14 @@ let result = client.album_new(&query).await?;
 
 **方法名 :** `album_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("limit", "10");
 let result = client.album_list(&query).await?;
 ```
 
-### 数字专辑-语种风格馆
+<a id="method-album_list_style"></a>
+### album_list_style - 数字专辑-语种风格馆
 
 说明 : 调用此接口 ,可获取语种风格馆数字专辑列表
 
@@ -3367,13 +3568,14 @@ let result = client.album_list(&query).await?;
 
 **方法名 :** `album_list_style`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("area", "Z_H").param("offset", "2");
 let result = client.album_list_style(&query).await?;
 ```
 
-### 获取专辑歌曲的音质
+<a id="method-album_privilege"></a>
+### album_privilege - 获取专辑歌曲的音质
 
 说明 : 调用后可获取专辑歌曲的音质
 
@@ -3381,13 +3583,14 @@ let result = client.album_list_style(&query).await?;
 
 **方法名 :** `album_privilege`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "168223858");
 let result = client.album_privilege(&query).await?;
 ```
 
-### 数字专辑&数字单曲-榜单
+<a id="method-album_songsaleboard"></a>
+### album_songsaleboard - 数字专辑&数字单曲-榜单
 
 说明 : 调用此接口 ,可获取数字专辑&数字单曲-榜单
 
@@ -3401,7 +3604,7 @@ let result = client.album_privilege(&query).await?;
 
 **方法名 :** `album_songsaleboard`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("type", "year")
@@ -3412,9 +3615,11 @@ let result = client.album_songsaleboard(&query).await?;
 
 ---
 
+<a id="cat-mv"></a>
 ## MV 相关
 
-### 全部 mv
+<a id="method-mv_all"></a>
+### mv_all - 全部 mv
 
 说明 : 调用此接口 , 可获取全部 mv
 
@@ -3430,13 +3635,14 @@ let result = client.album_songsaleboard(&query).await?;
 
 **方法名 :** `mv_all`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("area", "港台");
 let result = client.mv_all(&query).await?;
 ```
 
-### 最新 mv
+<a id="method-mv_first"></a>
+### mv_first - 最新 mv
 
 说明 : 调用此接口 , 可获取最新 mv
 
@@ -3446,13 +3652,14 @@ let result = client.mv_all(&query).await?;
 
 **方法名 :** `mv_first`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("limit", "10");
 let result = client.mv_first(&query).await?;
 ```
 
-### 网易出品 mv
+<a id="method-mv_exclusive_rcmd"></a>
+### mv_exclusive_rcmd - 网易出品 mv
 
 说明 : 调用此接口 , 可获取网易出品 mv
 
@@ -3462,13 +3669,14 @@ let result = client.mv_first(&query).await?;
 
 **方法名 :** `mv_exclusive_rcmd`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("limit", "10");
 let result = client.mv_exclusive_rcmd(&query).await?;
 ```
 
-### 获取 mv 数据
+<a id="method-mv_detail"></a>
+### mv_detail - 获取 mv 数据
 
 说明 : 调用此接口 , 传入 mvid ( 在搜索音乐的时候传 type=1004 获得 ) , 可获取对应 MV 数据 , 数据包含 mv 名字 , 歌手 , 发布时间 , mv 视频地址等数据 , 其中 mv 视频网易做了防盗链处理 , 可能不能直接播放 , 需要播放的话需要调用 `mv_url` 接口
 
@@ -3476,13 +3684,14 @@ let result = client.mv_exclusive_rcmd(&query).await?;
 
 **方法名 :** `mv_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("mvid", "5436712");
 let result = client.mv_detail(&query).await?;
 ```
 
-### 获取 mv 点赞转发评论数数据
+<a id="method-mv_detail_info"></a>
+### mv_detail_info - 获取 mv 点赞转发评论数数据
 
 说明 : 调用此接口 , 传入 mvid ( 在搜索音乐的时候传 type=1004 获得 ) , 可获取对应 MV 点赞转发评论数数据
 
@@ -3490,13 +3699,14 @@ let result = client.mv_detail(&query).await?;
 
 **方法名 :** `mv_detail_info`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("mvid", "5436712");
 let result = client.mv_detail_info(&query).await?;
 ```
 
-### mv 地址
+<a id="method-mv_url"></a>
+### mv_url - mv 地址
 
 说明 : 调用此接口 , 传入 mv id,可获取 mv 播放地址
 
@@ -3506,7 +3716,7 @@ let result = client.mv_detail_info(&query).await?;
 
 **方法名 :** `mv_url`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "5436712");
 let result = client.mv_url(&query).await?;
@@ -3516,7 +3726,8 @@ let query = Query::new().param("id", "10896407").param("r", "1080");
 let result = client.mv_url(&query).await?;
 ```
 
-### 收藏/取消收藏 MV
+<a id="method-mv_sub"></a>
+### mv_sub - 收藏/取消收藏 MV
 
 说明 : 调用此接口,可收藏/取消收藏 MV
 
@@ -3526,83 +3737,69 @@ let result = client.mv_url(&query).await?;
 
 **方法名 :** `mv_sub`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("mvid", "5436712").param("t", "1");
 let result = client.mv_sub(&query).await?;
 ```
 
-### 收藏的 MV 列表
+<a id="method-mv_sublist"></a>
+### mv_sublist - 收藏的 MV 列表
 
 说明 : 调用此接口,可获取收藏的 MV 列表
 
 **方法名 :** `mv_sublist`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.mv_sublist(&query).await?;
 ```
 
-### 推荐 mv
+<a id="method-personalized_mv"></a>
+### personalized_mv - 推荐 mv
 
 说明 : 调用此接口 , 可获取推荐 mv
 
 **方法名 :** `personalized_mv`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.personalized_mv(&query).await?;
 ```
 
-### mv 排行
-
-说明 : 调用此接口 , 可获取 mv 排行
-
-**可选参数 :** `limit` : 取出数量 , 默认为 30
-
-`area` : 地区,可选值为内地,港台,欧美,日本,韩国,不填则为全部
-
-`offset` : 偏移数量 , 用于分页 , 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
-
-**方法名 :** `top_mv`
-
-**调用例子 :**
-```rust
-let query = Query::new().param("limit", "10");
-let result = client.top_mv(&query).await?;
-```
-
----
-
+<a id="cat-video"></a>
 ## 视频相关
 
-### 获取视频标签列表
+<a id="method-video_group_list"></a>
+### video_group_list - 获取视频标签列表
 
 说明 : 调用此接口 , 可获取视频标签列表
 
 **方法名 :** `video_group_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.video_group_list(&query).await?;
 ```
 
-### 获取视频分类列表
+<a id="method-video_category_list"></a>
+### video_category_list - 获取视频分类列表
 
 说明 : 调用此接口 , 可获取视频分类列表
 
 **方法名 :** `video_category_list`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.video_category_list(&query).await?;
 ```
 
-### 获取视频标签/分类下的视频
+<a id="method-video_group"></a>
+### video_group - 获取视频标签/分类下的视频
 
 说明 : 调用此接口 , 传入标签/分类 `id`,可获取到相关的视频,分页参数只能传入 offset
 
@@ -3612,13 +3809,14 @@ let result = client.video_category_list(&query).await?;
 
 **方法名 :** `video_group`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "9104");
 let result = client.video_group(&query).await?;
 ```
 
-### 获取全部视频列表
+<a id="method-video_timeline_all"></a>
+### video_timeline_all - 获取全部视频列表
 
 说明 : 调用此接口,可获取视频分类列表,分页参数只能传入 offset
 
@@ -3626,13 +3824,14 @@ let result = client.video_group(&query).await?;
 
 **方法名 :** `video_timeline_all`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new();
 let result = client.video_timeline_all(&query).await?;
 ```
 
-### 获取推荐视频
+<a id="method-video_timeline_recommend"></a>
+### video_timeline_recommend - 获取推荐视频
 
 说明 : 调用此接口, 可获取推荐视频,分页参数只能传入 offset
 
@@ -3640,13 +3839,14 @@ let result = client.video_timeline_all(&query).await?;
 
 **方法名 :** `video_timeline_recommend`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("offset", "10");
 let result = client.video_timeline_recommend(&query).await?;
 ```
 
-### 视频详情
+<a id="method-video_detail"></a>
+### video_detail - 视频详情
 
 说明 : 调用此接口 , 可获取视频详情
 
@@ -3654,13 +3854,14 @@ let result = client.video_timeline_recommend(&query).await?;
 
 **方法名 :** `video_detail`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "89ADDE33C0AAE8EC14B99F6750DB954D");
 let result = client.video_detail(&query).await?;
 ```
 
-### 获取视频点赞转发评论数数据
+<a id="method-video_detail_info"></a>
+### video_detail_info - 获取视频点赞转发评论数数据
 
 说明 : 调用此接口 , 传入 vid ( 视频 id ) , 可获取对应视频点赞转发评论数数据
 
@@ -3668,13 +3869,14 @@ let result = client.video_detail(&query).await?;
 
 **方法名 :** `video_detail_info`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("vid", "89ADDE33C0AAE8EC14B99F6750DB954D");
 let result = client.video_detail_info(&query).await?;
 ```
 
-### 获取视频播放地址
+<a id="method-video_url"></a>
+### video_url - 获取视频播放地址
 
 说明 : 调用此接口 , 传入视频 id,可获取视频播放地址
 
@@ -3682,13 +3884,14 @@ let result = client.video_detail_info(&query).await?;
 
 **方法名 :** `video_url`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "89ADDE33C0AAE8EC14B99F6750DB954D");
 let result = client.video_url(&query).await?;
 ```
 
-### 收藏视频
+<a id="method-video_sub"></a>
+### video_sub - 收藏视频
 
 说明 : 调用此接口,可收藏视频
 
@@ -3698,7 +3901,7 @@ let result = client.video_url(&query).await?;
 
 **方法名 :** `video_sub`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new()
     .param("id", "89ADDE33C0AAE8EC14B99F6750DB954D")
@@ -3706,7 +3909,8 @@ let query = Query::new()
 let result = client.video_sub(&query).await?;
 ```
 
-### 相关视频
+<a id="method-related_allvideo"></a>
+### related_allvideo - 相关视频
 
 说明 : 调用此接口 , 可获取相关视频
 
@@ -3714,13 +3918,14 @@ let result = client.video_sub(&query).await?;
 
 **方法名 :** `related_allvideo`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "89ADDE33C0AAE8EC14B99F6750DB954D");
 let result = client.related_allvideo(&query).await?;
 ```
 
-### 获取 mlog 播放地址
+<a id="method-mlog_url"></a>
+### mlog_url - 获取 mlog 播放地址
 
 说明 : 调用此接口 , 传入 mlog id, 可获取 mlog 播放地址
 
@@ -3730,13 +3935,14 @@ let result = client.related_allvideo(&query).await?;
 
 **方法名 :** `mlog_url`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "a1qOVPTWKS1ZrK8");
 let result = client.mlog_url(&query).await?;
 ```
 
-### 将 mlog id 转为视频 id
+<a id="method-mlog_to_video"></a>
+### mlog_to_video - 将 mlog id 转为视频 id
 
 说明 : 调用此接口 , 传入 mlog id, 可获取 video id，然后通过 `video_url` 获取播放地址
 
@@ -3744,13 +3950,14 @@ let result = client.mlog_url(&query).await?;
 
 **方法名 :** `mlog_to_video`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("id", "a1qOVPTWKS1ZrK8");
 let result = client.mlog_to_video(&query).await?;
 ```
 
-### 歌曲相关视频
+<a id="method-mlog_music_rcmd"></a>
+### mlog_music_rcmd - 歌曲相关视频
 
 说明 : 可以调用此接口获取歌曲相关视频 (区别于 MV)， 有些歌曲没有 MV 但是有用户上传的与此歌曲相关的 Mlog。此功能仅在网易云音乐 APP 上存在。请注意：此接口偶尔会在相关视频后返回不相关视频，请合理使用。
 
@@ -3762,7 +3969,7 @@ let result = client.mlog_to_video(&query).await?;
 
 **方法名 :** `mlog_music_rcmd`
 
-**调用例子 :**
+**Rust 调用例子 :**
 ```rust
 let query = Query::new().param("songid", "186016");
 let result = client.mlog_music_rcmd(&query).await?;
@@ -3770,8 +3977,10 @@ let result = client.mlog_music_rcmd(&query).await?;
 
 ---
 
+<a id="cat-dj"></a>
 ## 电台相关
 
+<a id="method-dj_banner"></a>
 ### dj_banner - 电台 banner
 
 说明 : 调用此接口,可获取电台 banner
@@ -3787,6 +3996,7 @@ let result = client.dj_banner(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_personalize_recommend"></a>
 ### dj_personalize_recommend - 电台个性推荐
 
 说明 : 调用此接口,可获取电台个性推荐列表
@@ -3804,6 +4014,7 @@ let result = client.dj_personalize_recommend(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_subscriber"></a>
 ### dj_subscriber - 电台订阅者列表
 
 说明 : 调用此接口,可获取电台订阅者列表
@@ -3829,6 +4040,7 @@ let result = client.dj_subscriber(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_catelist"></a>
 ### dj_catelist - 电台分类
 
 说明 : 登录后调用此接口,可获得电台类型
@@ -3844,6 +4056,7 @@ let result = client.dj_catelist(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_category_excludehot"></a>
 ### dj_category_excludehot - 电台非热门类型
 
 说明 : 登录后调用此接口,可获得电台非热门类型
@@ -3859,6 +4072,7 @@ let result = client.dj_category_excludehot(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_category_recommend"></a>
 ### dj_category_recommend - 电台推荐类型
 
 说明 : 登录后调用此接口,可获得电台推荐类型
@@ -3874,6 +4088,7 @@ let result = client.dj_category_recommend(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_detail"></a>
 ### dj_detail - 电台详情
 
 说明 : 登录后调用此接口,传入 `rid`,可获得对应电台的详情介绍
@@ -3891,6 +4106,7 @@ let result = client.dj_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_hot"></a>
 ### dj_hot - 热门电台
 
 说明 : 调用此接口,可获取热门电台
@@ -3908,6 +4124,7 @@ let result = client.dj_hot(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_radio_hot"></a>
 ### dj_radio_hot - 类别热门电台
 
 说明 : 调用此接口,可获取类别热门电台
@@ -3925,6 +4142,7 @@ let result = client.dj_radio_hot(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_program"></a>
 ### dj_program - 电台节目
 
 说明 : 登录后调用此接口,传入 `rid`,可查看对应电台的电台节目以及对应的 id。注意此接口返回的 mp3Url 已经无效,需通过 `/song/url` 接口传入节目 mainTrackId 获取音频
@@ -3946,6 +4164,7 @@ let result = client.dj_program(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_program_detail"></a>
 ### dj_program_detail - 电台节目详情
 
 说明 : 调用此接口传入电台节目 id,可获得电台节目详情
@@ -3963,6 +4182,7 @@ let result = client.dj_program_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_program_toplist"></a>
 ### dj_program_toplist - 电台节目榜
 
 说明 : 登录后调用此接口,可获得电台节目榜
@@ -3980,6 +4200,7 @@ let result = client.dj_program_toplist(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_program_toplist_hours"></a>
 ### dj_program_toplist_hours - 24 小时节目榜
 
 说明 : 调用此接口,可获取 24 小时节目榜
@@ -3997,6 +4218,7 @@ let result = client.dj_program_toplist_hours(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_recommend"></a>
 ### dj_recommend - 电台推荐
 
 说明 : 登录后调用此接口,可获得推荐电台
@@ -4012,6 +4234,7 @@ let result = client.dj_recommend(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_recommend_type"></a>
 ### dj_recommend_type - 电台分类推荐
 
 说明 : 登录后调用此接口,传入分类,可获得对应类型电台列表
@@ -4029,6 +4252,7 @@ let result = client.dj_recommend_type(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_sub"></a>
 ### dj_sub - 电台订阅
 
 说明 : 登录后调用此接口,传入 `rid`,可订阅/取消订阅电台
@@ -4055,6 +4279,7 @@ let result = client.dj_sub(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_sublist"></a>
 ### dj_sublist - 电台订阅列表
 
 说明 : 登录后调用此接口,可获取订阅的电台列表
@@ -4070,6 +4295,7 @@ let result = client.dj_sublist(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_toplist"></a>
 ### dj_toplist - 新晋电台榜/热门电台榜
 
 说明 : 登录后调用此接口,可获得新晋电台榜/热门电台榜
@@ -4092,6 +4318,7 @@ let result = client.dj_toplist(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_toplist_hours"></a>
 ### dj_toplist_hours - 24 小时主播榜
 
 说明 : 调用此接口,可获取 24 小时主播榜
@@ -4109,6 +4336,7 @@ let result = client.dj_toplist_hours(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_toplist_newcomer"></a>
 ### dj_toplist_newcomer - 主播新人榜
 
 说明 : 调用此接口,可获取主播新人榜
@@ -4126,6 +4354,7 @@ let result = client.dj_toplist_newcomer(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_toplist_pay"></a>
 ### dj_toplist_pay - 付费精品电台
 
 说明 : 调用此接口,可获取付费精品电台
@@ -4143,6 +4372,7 @@ let result = client.dj_toplist_pay(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_toplist_popular"></a>
 ### dj_toplist_popular - 最热主播榜
 
 说明 : 调用此接口,可获取最热主播榜
@@ -4160,6 +4390,7 @@ let result = client.dj_toplist_popular(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_paygift"></a>
 ### dj_paygift - 付费精选
 
 说明 : 可以获取付费精选的电台列表
@@ -4179,6 +4410,7 @@ let result = client.dj_paygift(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_today_perfered"></a>
 ### dj_today_perfered - 电台今日优选
 
 说明 : 登录后调用此接口,可获得电台今日优选
@@ -4194,6 +4426,7 @@ let result = client.dj_today_perfered(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_radio_top"></a>
 ### dj_radio_top - 电台排行榜
 
 说明 : 调用此接口可以获取电台排行榜
@@ -4214,6 +4447,7 @@ let result = client.dj_radio_top(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_difm_all_style_channel"></a>
 ### dj_difm_all_style_channel - DIFM 电台分类
 
 说明 : 获取 DIFM 电台的全部风格分类频道
@@ -4231,6 +4465,7 @@ let result = client.dj_difm_all_style_channel(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_difm_channel_subscribe"></a>
 ### dj_difm_channel_subscribe - 收藏 DIFM 频道
 
 说明 : 收藏 DIFM 电台频道，需要登录
@@ -4248,6 +4483,7 @@ let result = client.dj_difm_channel_subscribe(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_difm_channel_unsubscribe"></a>
 ### dj_difm_channel_unsubscribe - 取消收藏 DIFM 频道
 
 说明 : 取消收藏 DIFM 电台频道，需要登录
@@ -4265,6 +4501,7 @@ let result = client.dj_difm_channel_unsubscribe(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_difm_playing_tracks_list"></a>
 ### dj_difm_playing_tracks_list - DIFM 播放列表
 
 说明 : 获取 DIFM 频道的播放列表
@@ -4286,6 +4523,7 @@ let result = client.dj_difm_playing_tracks_list(&query).await.unwrap();
 
 ---
 
+<a id="method-dj_difm_subscribe_channels_get"></a>
 ### dj_difm_subscribe_channels_get - DIFM 收藏列表
 
 说明 : 获取已收藏的 DIFM 频道列表，需要登录
@@ -4303,6 +4541,7 @@ let result = client.dj_difm_subscribe_channels_get(&query).await.unwrap();
 
 ---
 
+<a id="method-radio_sport_get"></a>
 ### radio_sport_get - 跑步漫游
 
 说明 : 根据步频获取跑步漫游电台
@@ -4321,8 +4560,10 @@ let result = client.radio_sport_get(&query).await.unwrap();
 ---
 
 
+<a id="cat-recommend"></a>
 ## 🎯 推荐相关
 
+<a id="method-personalized"></a>
 ### personalized - 推荐歌单
 
 说明 : 调用此接口,可获取推荐歌单
@@ -4340,6 +4581,7 @@ let result = client.personalized(&query).await.unwrap();
 
 ---
 
+<a id="method-personalized_newsong"></a>
 ### personalized_newsong - 推荐新音乐
 
 说明 : 调用此接口,可获取推荐新音乐
@@ -4357,6 +4599,7 @@ let result = client.personalized_newsong(&query).await.unwrap();
 
 ---
 
+<a id="method-personalized_djprogram"></a>
 ### personalized_djprogram - 推荐电台
 
 说明 : 调用此接口,可获取推荐电台
@@ -4372,6 +4615,7 @@ let result = client.personalized_djprogram(&query).await.unwrap();
 
 ---
 
+<a id="method-personalized_privatecontent"></a>
 ### personalized_privatecontent - 独家放送(入口列表)
 
 说明 : 调用此接口,可获取独家放送
@@ -4387,6 +4631,7 @@ let result = client.personalized_privatecontent(&query).await.unwrap();
 
 ---
 
+<a id="method-personalized_privatecontent_list"></a>
 ### personalized_privatecontent_list - 独家放送列表
 
 说明 : 调用此接口,可获取独家放送列表
@@ -4406,6 +4651,7 @@ let result = client.personalized_privatecontent_list(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_songs"></a>
 ### recommend_songs - 每日推荐歌曲
 
 说明 : 调用此接口,可获得每日推荐歌曲 (需要登录)
@@ -4421,6 +4667,7 @@ let result = client.recommend_songs(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_resource"></a>
 ### recommend_resource - 每日推荐歌单
 
 说明 : 调用此接口,可获得每日推荐歌单 (需要登录)
@@ -4436,6 +4683,7 @@ let result = client.recommend_resource(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_songs_dislike"></a>
 ### recommend_songs_dislike - 每日推荐歌曲不感兴趣
 
 说明 : 日推歌曲标记为不感兴趣 (同时会返回一个新推荐歌曲,需要登录)
@@ -4453,6 +4701,7 @@ let result = client.recommend_songs_dislike(&query).await.unwrap();
 
 ---
 
+<a id="method-history_recommend_songs"></a>
 ### history_recommend_songs - 获取历史日推可用日期列表
 
 说明 : 调用此接口,可获得历史日推可用日期列表
@@ -4468,6 +4717,7 @@ let result = client.history_recommend_songs(&query).await.unwrap();
 
 ---
 
+<a id="method-history_recommend_songs_detail"></a>
 ### history_recommend_songs_detail - 获取历史日推详情数据
 
 说明 : 调用此接口,传入当日日期,可获得当日历史日推数据
@@ -4485,6 +4735,7 @@ let result = client.history_recommend_songs_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-program_recommend"></a>
 ### program_recommend - 推荐节目
 
 说明 : 调用此接口,可获取推荐电台节目
@@ -4502,6 +4753,7 @@ let result = client.program_recommend(&query).await.unwrap();
 
 ---
 
+<a id="method-homepage_block_page"></a>
 ### homepage_block_page - 首页-发现
 
 说明 : 调用此接口,可获取 APP 首页信息
@@ -4519,6 +4771,7 @@ let result = client.homepage_block_page(&query).await.unwrap();
 
 ---
 
+<a id="method-homepage_dragon_ball"></a>
 ### homepage_dragon_ball - 首页圆形图标入口列表
 
 说明 : 调用此接口,可获取 APP 首页圆形图标入口列表
@@ -4534,6 +4787,7 @@ let result = client.homepage_dragon_ball(&query).await.unwrap();
 
 ---
 
+<a id="method-banner"></a>
 ### banner - 首页 Banner
 
 说明 : 调用此接口,可获取 banner(轮播图)数据
@@ -4554,6 +4808,7 @@ let result = client.banner(&query).await.unwrap();
 
 ---
 
+<a id="method-banner_v3"></a>
 ### banner_v3 - 首页轮播（v3）
 
 说明 : 获取 v3 版首页轮播图（v9.6.13 客户端使用版本）
@@ -4572,6 +4827,7 @@ let result = client.banner_v3(&query).await.unwrap();
 ---
 
 
+<a id="method-daily_signin"></a>
 ### daily_signin - 签到
 
 说明 : 调用此接口,可签到 (需要登录)。安卓端签到可获得 3 点经验,web/PC 端签到可获得 2 点经验
@@ -4589,6 +4845,7 @@ let result = client.daily_signin(&query).await.unwrap();
 
 ---
 
+<a id="method-personal_fm"></a>
 ### personal_fm - 私人 FM
 
 说明 : 私人 FM (需要登录)
@@ -4604,6 +4861,7 @@ let result = client.personal_fm(&query).await.unwrap();
 
 ---
 
+<a id="method-personal_fm_mode"></a>
 ### personal_fm_mode - 私人 FM 模式选择
 
 说明 : 调用此接口返回私人 FM 内容,并可以选择模式
@@ -4623,6 +4881,7 @@ let result = client.personal_fm_mode(&query).await.unwrap();
 
 ---
 
+<a id="method-fm_trash"></a>
 ### fm_trash - 垃圾桶
 
 说明 : 调用此接口,传入音乐 id,可把该音乐从私人 FM 中移除至垃圾桶
@@ -4640,6 +4899,7 @@ let result = client.fm_trash(&query).await.unwrap();
 
 ---
 
+<a id="method-playmode_intelligence_list"></a>
 ### playmode_intelligence_list - 心动模式/智能播放
 
 说明 : 登录后调用此接口,可获取心动模式/智能播放列表
@@ -4667,6 +4927,7 @@ let result = client.playmode_intelligence_list(&query).await.unwrap();
 
 ---
 
+<a id="method-playmode_song_vector"></a>
 ### playmode_song_vector - 歌曲向量
 
 说明 : 调用此接口,可获取歌曲向量数据
@@ -4682,6 +4943,7 @@ let result = client.playmode_song_vector(&query).await.unwrap();
 
 ---
 
+<a id="method-simi_song"></a>
 ### simi_song - 相似歌曲
 
 说明 : 调用此接口,传入歌曲 id,可获得相似歌曲
@@ -4699,6 +4961,7 @@ let result = client.simi_song(&query).await.unwrap();
 
 ---
 
+<a id="method-simi_artist"></a>
 ### simi_artist - 相似歌手
 
 说明 : 调用此接口,传入歌手 id,可获得相似歌手
@@ -4716,6 +4979,7 @@ let result = client.simi_artist(&query).await.unwrap();
 
 ---
 
+<a id="method-simi_playlist"></a>
 ### simi_playlist - 相似歌单
 
 说明 : 调用此接口,传入歌曲 id,可获得相似歌单
@@ -4733,6 +4997,7 @@ let result = client.simi_playlist(&query).await.unwrap();
 
 ---
 
+<a id="method-simi_mv"></a>
 ### simi_mv - 相似 MV
 
 说明 : 调用此接口,传入 mvid,可获取相似 MV
@@ -4750,6 +5015,7 @@ let result = client.simi_mv(&query).await.unwrap();
 
 ---
 
+<a id="method-simi_user"></a>
 ### simi_user - 最近听了这首歌的用户
 
 说明 : 调用此接口,传入歌曲 id,可获取最近 5 个听了这首歌的用户
@@ -4767,6 +5033,7 @@ let result = client.simi_user(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_category_configs"></a>
 ### recommend_category_configs - 每日风格推荐配置
 
 说明 : 获取每日风格推荐的场景配置列表
@@ -4784,6 +5051,7 @@ let result = client.recommend_category_configs(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_category_set"></a>
 ### recommend_category_set - 设置每日风格推荐
 
 说明 : 设置每日风格推荐的标签和场景
@@ -4803,6 +5071,7 @@ let result = client.recommend_category_set(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_category_songs"></a>
 ### recommend_category_songs - 每日风格推荐歌曲
 
 说明 : 获取每日风格推荐歌曲
@@ -4820,6 +5089,7 @@ let result = client.recommend_category_songs(&query).await.unwrap();
 
 ---
 
+<a id="method-recommend_songs_v1"></a>
 ### recommend_songs_v1 - 每日推荐歌曲 v1
 
 说明 : 新版每日推荐歌曲接口
@@ -4838,8 +5108,10 @@ let result = client.recommend_songs_v1(&query).await.unwrap();
 ---
 
 
+<a id="cat-ranking"></a>
 ## 🏆 排行榜相关
 
+<a id="method-toplist"></a>
 ### toplist - 所有榜单
 
 说明 : 调用此接口,可获取所有榜单
@@ -4855,6 +5127,7 @@ let result = client.toplist(&query).await.unwrap();
 
 ---
 
+<a id="method-toplist_detail"></a>
 ### toplist_detail - 所有榜单内容摘要
 
 说明 : 调用此接口,可获取所有榜单内容摘要
@@ -4870,6 +5143,7 @@ let result = client.toplist_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-toplist_detail_v2"></a>
 ### toplist_detail_v2 - 所有榜单内容摘要 V2
 
 说明 : 调用此接口,可获取所有榜单内容摘要(V2 版本)
@@ -4885,6 +5159,7 @@ let result = client.toplist_detail_v2(&query).await.unwrap();
 
 ---
 
+<a id="method-toplist_artist"></a>
 ### toplist_artist - 歌手榜
 
 说明 : 调用此接口,可获取排行榜中的歌手榜
@@ -4902,6 +5177,7 @@ let result = client.toplist_artist(&query).await.unwrap();
 
 ---
 
+<a id="method-top_song"></a>
 ### top_song - 新歌速递
 
 说明 : 调用此接口,可获取新歌速递
@@ -4919,6 +5195,7 @@ let result = client.top_song(&query).await.unwrap();
 
 ---
 
+<a id="method-top_album"></a>
 ### top_album - 新碟上架
 
 说明 : 调用此接口,可获取新碟上架列表
@@ -4940,6 +5217,7 @@ let result = client.top_album(&query).await.unwrap();
 
 ---
 
+<a id="method-top_artists"></a>
 ### top_artists - 热门歌手
 
 说明 : 调用此接口,可获取热门歌手数据
@@ -4959,6 +5237,7 @@ let result = client.top_artists(&query).await.unwrap();
 
 ---
 
+<a id="method-top_mv"></a>
 ### top_mv - MV 排行
 
 说明 : 调用此接口,可获取 MV 排行
@@ -4976,6 +5255,7 @@ let result = client.top_mv(&query).await.unwrap();
 
 ---
 
+<a id="method-top_playlist"></a>
 ### top_playlist - 歌单 (网友精选碟)
 
 说明 : 调用此接口,可获取网友精选碟歌单
@@ -4995,6 +5275,7 @@ let result = client.top_playlist(&query).await.unwrap();
 
 ---
 
+<a id="method-top_playlist_highquality"></a>
 ### top_playlist_highquality - 获取精品歌单
 
 说明 : 调用此接口,可获取精品歌单
@@ -5014,6 +5295,7 @@ let result = client.top_playlist_highquality(&query).await.unwrap();
 
 ---
 
+<a id="method-top_list"></a>
 ### top_list - 排行榜详情 (旧版)
 
 说明 : 调用此接口,传入榜单 id,可获取不同排行榜数据。推荐使用歌单详情接口 `playlist_detail` 传入排行榜 id 获取排行榜详情
@@ -5031,6 +5313,7 @@ let result = client.top_list(&query).await.unwrap();
 
 ---
 
+<a id="method-chart_detail"></a>
 ### chart_detail - 排行榜详情
 
 说明 : 获取指定维度音乐排行榜详情。该接口免登录
@@ -5050,6 +5333,7 @@ let result = client.chart_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-chart_song_detail"></a>
 ### chart_song_detail - 排行榜歌曲列表
 
 说明 : 获取指定维度音乐排行榜的歌曲列表。该接口免登录
@@ -5070,8 +5354,10 @@ let result = client.chart_song_detail(&query).await.unwrap();
 ---
 
 
+<a id="cat-cloud"></a>
 ## 云盘相关
 
+<a id="method-user_cloud"></a>
 ### user_cloud - 云盘数据
 
 说明 : 登录后调用此接口,可获取云盘数据,获取的数据没有对应 url,需要再调用一次 `song_url_v1` 获取 url
@@ -5089,6 +5375,7 @@ let result = client.user_cloud(&query).await.unwrap();
 
 ---
 
+<a id="method-user_cloud_detail"></a>
 ### user_cloud_detail - 云盘数据详情
 
 说明 : 登录后调用此接口,传入云盘歌曲 id,可获取云盘数据详情
@@ -5106,6 +5393,7 @@ let result = client.user_cloud_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-user_cloud_del"></a>
 ### user_cloud_del - 云盘歌曲删除
 
 说明 : 登录后调用此接口,可删除云盘歌曲
@@ -5123,6 +5411,7 @@ let result = client.user_cloud_del(&query).await.unwrap();
 
 ---
 
+<a id="method-cloud"></a>
 ### cloud - 云盘上传
 
 说明 : 登录后调用此接口,使用 `multipart/form-data` 上传 mp3,可上传歌曲到云盘
@@ -5138,6 +5427,7 @@ let result = client.cloud(&query).await.unwrap();
 
 ---
 
+<a id="method-cloud_import"></a>
 ### cloud_import - 云盘导入歌曲
 
 说明 : 登录后调用此接口,可云盘导入歌曲而无需上传文件。以下情况可导入成功: 1.文件已经有用户上传至云盘 2.文件是网易云音乐自己的音源。
@@ -5166,6 +5456,7 @@ let result = client.cloud_import(&query).await.unwrap();
 
 ---
 
+<a id="method-cloud_match"></a>
 ### cloud_match - 云盘歌曲信息匹配纠正
 
 说明 : 登录后调用此接口,可对云盘歌曲信息匹配纠正,如需取消匹配,asid 需要传 0
@@ -5193,6 +5484,7 @@ let result = client.cloud_match(&query).await.unwrap();
 
 ---
 
+<a id="method-cloud_lyric_get"></a>
 ### cloud_lyric_get - 获取云盘歌词
 
 说明 : 调用此接口,获取云盘歌曲的歌词,歌词来自此文件的音乐元数据 LYRICS 标签
@@ -5212,6 +5504,7 @@ let result = client.cloud_lyric_get(&query).await.unwrap();
 
 ---
 
+<a id="method-cloud_upload_token"></a>
 ### cloud_upload_token - 获取上传凭证
 
 说明 : 客户端直传模式下,调用此接口获取上传凭证
@@ -5232,6 +5525,7 @@ let result = client.cloud_upload_token(&query).await.unwrap();
 
 ---
 
+<a id="method-cloud_upload_complete"></a>
 ### cloud_upload_complete - 完成上传导入
 
 说明 : 客户端直传模式下,上传文件后调用此接口完成导入
@@ -5257,6 +5551,7 @@ let result = client.cloud_upload_complete(&query).await.unwrap();
 
 ---
 
+<a id="method-song_cloud_download"></a>
 ### song_cloud_download - 云盘歌曲下载链接
 
 说明 : 从云盘获取歌曲下载链接
@@ -5275,8 +5570,10 @@ let result = client.song_cloud_download(&query).await.unwrap();
 ---
 
 
+<a id="cat-message"></a>
 ## 💌 私信相关
 
+<a id="method-msg_private"></a>
 ### msg_private - 通知-私信
 
 说明 : 登录后调用此接口,可获取私信
@@ -5294,6 +5591,7 @@ let result = client.msg_private(&query).await.unwrap();
 
 ---
 
+<a id="method-msg_private_history"></a>
 ### msg_private_history - 私信内容
 
 说明 : 登录后调用此接口,可获取私信内容
@@ -5313,6 +5611,7 @@ let result = client.msg_private_history(&query).await.unwrap();
 
 ---
 
+<a id="method-msg_comments"></a>
 ### msg_comments - 通知-评论
 
 说明 : 登录后调用此接口,可获取评论通知
@@ -5332,6 +5631,7 @@ let result = client.msg_comments(&query).await.unwrap();
 
 ---
 
+<a id="method-msg_forwards"></a>
 ### msg_forwards - 通知-@我
 
 说明 : 登录后调用此接口,可获取 @我 数据
@@ -5349,6 +5649,7 @@ let result = client.msg_forwards(&query).await.unwrap();
 
 ---
 
+<a id="method-msg_notices"></a>
 ### msg_notices - 通知-通知
 
 说明 : 登录后调用此接口,可获取通知
@@ -5366,6 +5667,7 @@ let result = client.msg_notices(&query).await.unwrap();
 
 ---
 
+<a id="method-msg_recentcontact"></a>
 ### msg_recentcontact - 最近联系人
 
 说明 : 登录后调用此接口,可获取最近联系人
@@ -5381,6 +5683,7 @@ let result = client.msg_recentcontact(&query).await.unwrap();
 
 ---
 
+<a id="method-send_text"></a>
 ### send_text - 发送私信
 
 说明 : 登录后调用此接口,传入用户 id 和要发送的信息,可以发送私信 (注:不能发送私信给自己)
@@ -5400,6 +5703,7 @@ let result = client.send_text(&query).await.unwrap();
 
 ---
 
+<a id="method-send_song"></a>
 ### send_song - 发送私信(带歌曲)
 
 说明 : 登录后调用此接口,传入用户 id、信息和音乐 id,可以发送音乐私信
@@ -5420,6 +5724,7 @@ let result = client.send_song(&query).await.unwrap();
 
 ---
 
+<a id="method-send_playlist"></a>
 ### send_playlist - 发送私信(带歌单)
 
 说明 : 登录后调用此接口,传入用户 id、信息和歌单 id,可以发送带歌单的私信 (注:不能发送重复的歌单)
@@ -5440,6 +5745,7 @@ let result = client.send_playlist(&query).await.unwrap();
 
 ---
 
+<a id="method-send_album"></a>
 ### send_album - 发送私信(带专辑)
 
 说明 : 登录后调用此接口,传入用户 id、信息和专辑 id,可以发送专辑私信
@@ -5460,6 +5766,7 @@ let result = client.send_album(&query).await.unwrap();
 
 ---
 
+<a id="method-share_resource"></a>
 ### share_resource - 分享到动态
 
 说明 : 登录后调用此接口,可以分享文本、歌曲、歌单、mv、电台、电台节目、专辑到动态
@@ -5481,6 +5788,7 @@ let result = client.share_resource(&query).await.unwrap();
 
 ---
 
+<a id="method-resource_like"></a>
 ### resource_like - 资源点赞
 
 说明 : 调用此接口,可对 MV、电台、视频等资源点赞
@@ -5501,6 +5809,7 @@ let result = client.resource_like(&query).await.unwrap();
 
 ---
 
+<a id="method-event"></a>
 ### event - 获取动态列表
 
 说明 : 调用此接口,可获取各种动态
@@ -5520,6 +5829,7 @@ let result = client.event(&query).await.unwrap();
 
 ---
 
+<a id="method-event_del"></a>
 ### event_del - 删除用户动态
 
 说明 : 登录后调用此接口,可以删除用户动态
@@ -5537,6 +5847,7 @@ let result = client.event_del(&query).await.unwrap();
 
 ---
 
+<a id="method-event_forward"></a>
 ### event_forward - 转发用户动态
 
 说明 : 登录后调用此接口,可以转发用户动态
@@ -5557,8 +5868,10 @@ let result = client.event_forward(&query).await.unwrap();
 
 ---
 
+<a id="cat-vip"></a>
 ## 👑 VIP/会员
 
+<a id="method-vip_info"></a>
 ### vip_info - 获取 VIP 信息
 
 说明 : 登录后调用此接口,可获取当前 VIP 信息
@@ -5579,6 +5892,7 @@ let result = client.vip_info(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_info_v2"></a>
 ### vip_info_v2 - 获取 VIP 信息(app 端)
 
 说明 : 登录后调用此接口,可获取当前 VIP 信息 (app 端)
@@ -5596,6 +5910,7 @@ let result = client.vip_info_v2(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_sign"></a>
 ### vip_sign - 黑胶乐签打卡
 
 说明 : 登录后调用此接口,进行黑胶乐签打卡。返回体包含 `taskSign`、`checkinDetail`、`signed`、`message`，两个上游接口都返回 `code=200` 时 `signed=true`。
@@ -5611,6 +5926,7 @@ let result = client.vip_sign(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_sign_info"></a>
 ### vip_sign_info - 黑胶乐签打卡信息
 
 说明 : 登录后调用此接口,获取黑胶乐签打卡信息
@@ -5626,6 +5942,7 @@ let result = client.vip_sign_info(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_tasks"></a>
 ### vip_tasks - VIP 任务
 
 说明 : 登录后调用此接口,可获取会员任务
@@ -5641,6 +5958,7 @@ let result = client.vip_tasks(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_timemachine"></a>
 ### vip_timemachine - 黑胶时光机
 
 说明 : 调用此接口,可获得黑胶时光机数据
@@ -5665,6 +5983,7 @@ let result = client.vip_timemachine(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_growthpoint"></a>
 ### vip_growthpoint - VIP 成长值
 
 说明 : 登录后调用此接口,可获取当前会员成长值
@@ -5680,6 +5999,7 @@ let result = client.vip_growthpoint(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_growthpoint_details"></a>
 ### vip_growthpoint_details - VIP 成长值获取记录
 
 说明 : 登录后调用此接口,可获取会员成长值领取记录
@@ -5697,6 +6017,7 @@ let result = client.vip_growthpoint_details(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_growthpoint_get"></a>
 ### vip_growthpoint_get - 领取 VIP 成长值
 
 说明 : 登录后调用此接口,可获取已完成的会员任务的成长值奖励
@@ -5714,6 +6035,7 @@ let result = client.vip_growthpoint_get(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_growthpoint_getall"></a>
 ### vip_growthpoint_getall - 一键领取会员成长值
 
 说明 : 登录后一键领取所有会员成长值任务奖励
@@ -5731,6 +6053,7 @@ let result = client.vip_growthpoint_getall(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_sign_history"></a>
 ### vip_sign_history - 黑胶乐签历史/状态
 
 说明 : 获取黑胶乐签打卡历史或状态信息
@@ -5748,6 +6071,7 @@ let result = client.vip_sign_history(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_sign_detail"></a>
 ### vip_sign_detail - 黑胶乐签打卡详情
 
 说明 : 获取黑胶乐签打卡详情
@@ -5765,6 +6089,7 @@ let result = client.vip_sign_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-vip_tasks_v1"></a>
 ### vip_tasks_v1 - 会员任务（新版）
 
 说明 : 登录后获取新版会员任务中心的任务进度
@@ -5783,8 +6108,10 @@ let result = client.vip_tasks_v1(&query).await.unwrap();
 ---
 
 
+<a id="cat-yunbei"></a>
 ## 🌟 云贝
 
+<a id="method-yunbei"></a>
 ### yunbei - 云贝签到信息
 
 说明 : 登录后调用此接口可获取云贝签到信息(连续签到天数,第二天全部可获得的云贝)
@@ -5800,6 +6127,7 @@ let result = client.yunbei(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_info"></a>
 ### yunbei_info - 云贝账户信息
 
 说明 : 登录后调用此接口可获取云贝账户信息(账户云贝数)
@@ -5815,6 +6143,7 @@ let result = client.yunbei_info(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_sign"></a>
 ### yunbei_sign - 云贝签到
 
 说明 : 登录后调用此接口可进行云贝签到
@@ -5830,6 +6159,7 @@ let result = client.yunbei_sign(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_today"></a>
 ### yunbei_today - 云贝今日签到信息
 
 说明 : 登录后调用此接口可获取云贝今日签到信息(今日签到获取的云贝数)
@@ -5845,6 +6175,7 @@ let result = client.yunbei_today(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_expense"></a>
 ### yunbei_expense - 云贝支出
 
 说明 : 登录后调用此接口可获取云贝支出
@@ -5862,6 +6193,7 @@ let result = client.yunbei_expense(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_receipt"></a>
 ### yunbei_receipt - 云贝收入
 
 说明 : 登录后调用此接口可获取云贝收入
@@ -5879,6 +6211,7 @@ let result = client.yunbei_receipt(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_tasks"></a>
 ### yunbei_tasks - 云贝所有任务
 
 说明 : 登录后调用此接口可获取云贝所有任务
@@ -5894,6 +6227,7 @@ let result = client.yunbei_tasks(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_tasks_todo"></a>
 ### yunbei_tasks_todo - 云贝 todo 任务
 
 说明 : 登录后调用此接口可获取云贝 todo 任务
@@ -5909,6 +6243,7 @@ let result = client.yunbei_tasks_todo(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_task_finish"></a>
 ### yunbei_task_finish - 云贝完成任务
 
 说明 : 调用此接口完成云贝任务
@@ -5930,6 +6265,7 @@ let result = client.yunbei_task_finish(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_rcmd_song"></a>
 ### yunbei_rcmd_song - 云贝推歌
 
 说明 : 登录后调用此接口,传入歌曲 id,可以进行云贝推歌
@@ -5954,6 +6290,7 @@ let result = client.yunbei_rcmd_song(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_rcmd_song_history"></a>
 ### yunbei_rcmd_song_history - 云贝推歌历史记录
 
 说明 : 登录后调用此接口,可以获得云贝推歌历史记录
@@ -5971,6 +6308,7 @@ let result = client.yunbei_rcmd_song_history(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_task_list_v1"></a>
 ### yunbei_task_list_v1 - 云贝广告任务状态
 
 说明 : 查询今日云贝广告任务状态，需要登录
@@ -5988,6 +6326,7 @@ let result = client.yunbei_task_list_v1(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_task_recommend_song"></a>
 ### yunbei_task_recommend_song - 云贝任务推荐歌曲
 
 说明 : 获取云贝广告任务推荐歌曲
@@ -6005,6 +6344,7 @@ let result = client.yunbei_task_recommend_song(&query).await.unwrap();
 
 ---
 
+<a id="method-yunbei_task_finish_v1"></a>
 ### yunbei_task_finish_v1 - 完成云贝广告任务
 
 说明 : 完成云贝广告任务并领取云贝，单日最多 10 次
@@ -6023,8 +6363,10 @@ let result = client.yunbei_task_finish_v1(&query).await.unwrap();
 ---
 
 
+<a id="cat-listen"></a>
 ## 👣 听歌足迹
 
+<a id="method-listen_data_year_report"></a>
 ### listen_data_year_report - 年度听歌足迹
 
 说明 : 登录后调用此接口,获取年度听歌足迹
@@ -6040,6 +6382,7 @@ let result = client.listen_data_year_report(&query).await.unwrap();
 
 ---
 
+<a id="method-listen_data_today_song"></a>
 ### listen_data_today_song - 今日收听
 
 说明 : 登录后调用此接口,获取今日收听
@@ -6055,6 +6398,7 @@ let result = client.listen_data_today_song(&query).await.unwrap();
 
 ---
 
+<a id="method-listen_data_total"></a>
 ### listen_data_total - 总收听时长
 
 说明 : 登录后调用此接口,获取总收听时长;相关接口可能需要 VIP 权限
@@ -6070,6 +6414,7 @@ let result = client.listen_data_total(&query).await.unwrap();
 
 ---
 
+<a id="method-listen_data_realtime_report"></a>
 ### listen_data_realtime_report - 本周/本月收听时长
 
 说明 : 登录后调用此接口,获取本周/本月收听时长
@@ -6087,6 +6432,7 @@ let result = client.listen_data_realtime_report(&query).await.unwrap();
 
 ---
 
+<a id="method-listen_data_report"></a>
 ### listen_data_report - 周/月/年收听报告
 
 说明 : 登录后调用此接口,获取周/月/年收听报告
@@ -6106,6 +6452,7 @@ let result = client.listen_data_report(&query).await.unwrap();
 
 ---
 
+<a id="method-recent_listen_list"></a>
 ### recent_listen_list - 最近听歌列表
 
 说明 : 调用后可获取最近听歌列表
@@ -6121,6 +6468,7 @@ let result = client.recent_listen_list(&query).await.unwrap();
 
 ---
 
+<a id="method-record_recent_song"></a>
 ### record_recent_song - 最近播放-歌曲
 
 说明 : 调用此接口,可获得最近播放-歌曲
@@ -6138,6 +6486,7 @@ let result = client.record_recent_song(&query).await.unwrap();
 
 ---
 
+<a id="method-record_recent_album"></a>
 ### record_recent_album - 最近播放-专辑
 
 说明 : 调用此接口,可获得最近播放-专辑
@@ -6155,6 +6504,7 @@ let result = client.record_recent_album(&query).await.unwrap();
 
 ---
 
+<a id="method-record_recent_playlist"></a>
 ### record_recent_playlist - 最近播放-歌单
 
 说明 : 调用此接口,可获得最近播放-歌单
@@ -6172,6 +6522,7 @@ let result = client.record_recent_playlist(&query).await.unwrap();
 
 ---
 
+<a id="method-record_recent_dj"></a>
 ### record_recent_dj - 最近播放-播客
 
 说明 : 调用此接口,可获得最近播放-播客
@@ -6189,6 +6540,7 @@ let result = client.record_recent_dj(&query).await.unwrap();
 
 ---
 
+<a id="method-record_recent_video"></a>
 ### record_recent_video - 最近播放-视频
 
 说明 : 调用此接口,可获得最近播放-视频
@@ -6206,6 +6558,7 @@ let result = client.record_recent_video(&query).await.unwrap();
 
 ---
 
+<a id="method-record_recent_voice"></a>
 ### record_recent_voice - 最近播放-声音
 
 说明 : 调用此接口,可获得最近播放-声音
@@ -6223,6 +6576,7 @@ let result = client.record_recent_voice(&query).await.unwrap();
 
 ---
 
+<a id="method-listen_data_song_play_rank"></a>
 ### listen_data_song_play_rank - 歌曲播放排行
 
 说明 : 获取听歌足迹中的歌曲播放排行（Top 20）
@@ -6241,8 +6595,10 @@ let result = client.listen_data_song_play_rank(&query).await.unwrap();
 ---
 
 
+<a id="cat-style"></a>
 ## 🎨 风格/曲风
 
+<a id="method-style_list"></a>
 ### style_list - 曲风列表
 
 说明 : 调用此接口获取曲风列表及其对应的 `tagId`
@@ -6258,6 +6614,7 @@ let result = client.style_list(&query).await.unwrap();
 
 ---
 
+<a id="method-style_detail"></a>
 ### style_detail - 曲风详情
 
 说明 : 调用此接口可以获取该曲风的描述信息
@@ -6275,6 +6632,7 @@ let result = client.style_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-style_song"></a>
 ### style_song - 曲风-歌曲
 
 说明 : 调用此接口可以获取该曲风对应的歌曲
@@ -6299,6 +6657,7 @@ let result = client.style_song(&query).await.unwrap();
 
 ---
 
+<a id="method-style_album"></a>
 ### style_album - 曲风-专辑
 
 说明 : 调用此接口可以获取该曲风对应的专辑
@@ -6318,6 +6677,7 @@ let result = client.style_album(&query).await.unwrap();
 
 ---
 
+<a id="method-style_artist"></a>
 ### style_artist - 曲风-歌手
 
 说明 : 调用此接口可以获取该曲风对应的歌手
@@ -6337,6 +6697,7 @@ let result = client.style_artist(&query).await.unwrap();
 
 ---
 
+<a id="method-style_playlist"></a>
 ### style_playlist - 曲风-歌单
 
 说明 : 调用此接口可以获取该曲风对应的歌单
@@ -6356,6 +6717,7 @@ let result = client.style_playlist(&query).await.unwrap();
 
 ---
 
+<a id="method-style_preference"></a>
 ### style_preference - 曲风偏好
 
 说明 : 登录后调用此接口获取我的曲风偏好
@@ -6371,8 +6733,10 @@ let result = client.style_preference(&query).await.unwrap();
 
 ---
 
+<a id="cat-digital-album"></a>
 ## 💿 数字专辑
 
+<a id="method-digital_album_detail"></a>
 ### digital_album_detail - 数字专辑详情
 
 说明 : 调用此接口,传入专辑 id,可获取数字专辑信息
@@ -6390,6 +6754,7 @@ let result = client.digital_album_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-digital_album_ordering"></a>
 ### digital_album_ordering - 购买数字专辑
 
 说明 : 登录后调用此接口,可获取购买数字专辑的地址,把地址生成二维码后可扫描购买专辑
@@ -6410,6 +6775,7 @@ let result = client.digital_album_ordering(&query).await.unwrap();
 
 ---
 
+<a id="method-digital_album_purchased"></a>
 ### digital_album_purchased - 我的数字专辑
 
 说明 : 登录后调用此接口,可获取我的数字专辑
@@ -6427,6 +6793,7 @@ let result = client.digital_album_purchased(&query).await.unwrap();
 
 ---
 
+<a id="method-digital_album_sales"></a>
 ### digital_album_sales - 数字专辑销量
 
 说明 : 调用此接口,传入专辑 id,可获取数字专辑销量
@@ -6448,8 +6815,10 @@ let result = client.digital_album_sales(&query).await.unwrap();
 
 ---
 
+<a id="cat-voice"></a>
 ## 🎙️ 声音/播客
 
+<a id="method-voice_upload"></a>
 ### voice_upload - 播客上传声音
 
 说明 : 可以上传声音到播客
@@ -6480,6 +6849,7 @@ let result = client
 
 ---
 
+<a id="method-voice_delete"></a>
 ### voice_delete - 播客删除
 
 说明 : 可以删除播客声音
@@ -6497,6 +6867,7 @@ let result = client.voice_delete(&query).await.unwrap();
 
 ---
 
+<a id="method-voice_detail"></a>
 ### voice_detail - 播客声音详情
 
 说明 : 获取播客里的声音详情
@@ -6514,6 +6885,7 @@ let result = client.voice_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-voice_lyric"></a>
 ### voice_lyric - 获取声音歌词
 
 说明 : 调用此接口可以获取声音歌词
@@ -6531,6 +6903,7 @@ let result = client.voice_lyric(&query).await.unwrap();
 
 ---
 
+<a id="method-voicelist_list"></a>
 ### voicelist_list - 播客声音列表
 
 说明 : 可以获取播客里的声音
@@ -6550,6 +6923,7 @@ let result = client.voicelist_list(&query).await.unwrap();
 
 ---
 
+<a id="method-voicelist_detail"></a>
 ### voicelist_detail - 播客列表详情
 
 说明 : 可以获取播客封面、分类、名称、简介等
@@ -6567,6 +6941,7 @@ let result = client.voicelist_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-voicelist_search"></a>
 ### voicelist_search - 播客列表搜索
 
 说明 : 可以获取播客列表
@@ -6584,6 +6959,7 @@ let result = client.voicelist_search(&query).await.unwrap();
 
 ---
 
+<a id="method-voicelist_list_search"></a>
 ### voicelist_list_search - 播客声音搜索
 
 说明 : 可以搜索播客里的声音
@@ -6603,6 +6979,7 @@ let result = client.voicelist_list_search(&query).await.unwrap();
 
 ---
 
+<a id="method-voicelist_trans"></a>
 ### voicelist_trans - 播客声音排序
 
 说明 : 调整声音在列表中的顺序
@@ -6625,6 +7002,7 @@ let result = client.voicelist_trans(&query).await.unwrap();
 
 ---
 
+<a id="method-voicelist_my_created"></a>
 ### voicelist_my_created - 我创建的播客声音
 
 说明 : 获取当前登录用户创建的播客声音列表
@@ -6643,8 +7021,10 @@ let result = client.voicelist_my_created(&query).await.unwrap();
 ---
 
 
+<a id="cat-sati"></a>
 ## 🧘 助眠解压
 
+<a id="method-sati_tag_list"></a>
 ### sati_tag_list - 标签列表
 
 说明 : 获取助眠解压的标签列表
@@ -6662,6 +7042,7 @@ let result = client.sati_tag_list(&query).await.unwrap();
 
 ---
 
+<a id="method-sati_resource_list"></a>
 ### sati_resource_list - 标签下资源列表
 
 说明 : 获取指定标签下的助眠解压资源列表
@@ -6679,6 +7060,7 @@ let result = client.sati_resource_list(&query).await.unwrap();
 
 ---
 
+<a id="method-sati_resource_list_more"></a>
 ### sati_resource_list_more - 同类推荐
 
 说明 : 获取某个助眠解压资源的同类推荐
@@ -6696,6 +7078,7 @@ let result = client.sati_resource_list_more(&query).await.unwrap();
 
 ---
 
+<a id="method-sati_resource_sub"></a>
 ### sati_resource_sub - 收藏/取消收藏资源
 
 说明 : 收藏或取消收藏助眠解压资源，需要登录
@@ -6715,6 +7098,7 @@ let result = client.sati_resource_sub(&query).await.unwrap();
 
 ---
 
+<a id="method-sati_resource_sub_list"></a>
 ### sati_resource_sub_list - 收藏列表
 
 说明 : 获取助眠解压资源的收藏列表，需要登录
@@ -6732,6 +7116,7 @@ let result = client.sati_resource_sub_list(&query).await.unwrap();
 
 ---
 
+<a id="method-sati_timescene_resources_get"></a>
 ### sati_timescene_resources_get - 时间场景推荐资源
 
 说明 : 获取特定时间场景的助眠解压推荐资源
@@ -6750,8 +7135,10 @@ let result = client.sati_timescene_resources_get(&query).await.unwrap();
 ---
 
 
+<a id="cat-musician"></a>
 ## 🎵 音乐人
 
+<a id="method-musician_sign"></a>
 ### musician_sign - 音乐人签到
 
 说明 : 音乐人登录后调用此接口,可以完成"登录音乐人中心"任务,然后通过 `musician_cloudbean_obtain` 接口可以领取相应的云豆
@@ -6767,6 +7154,7 @@ let result = client.musician_sign(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_tasks"></a>
 ### musician_tasks - 音乐人任务
 
 说明 : 音乐人登录后调用此接口,可获取音乐人任务。返回数据中 `status` 字段: 0 未开始, 10 进行中, 20 完成但未领取云豆, 100 完成并已领取
@@ -6782,6 +7170,7 @@ let result = client.musician_tasks(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_tasks_new"></a>
 ### musician_tasks_new - 音乐人任务(新)
 
 说明 : 音乐人登录后调用此接口,可获取音乐人任务(新版)
@@ -6797,6 +7186,7 @@ let result = client.musician_tasks_new(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_vip_tasks"></a>
 ### musician_vip_tasks - 音乐人黑胶会员任务
 
 说明 : 音乐人登录后调用此接口,可获取音乐人黑胶会员任务。返回数据中 `missionStatus` 为 100 表示任务完成
@@ -6812,6 +7202,7 @@ let result = client.musician_vip_tasks(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_data_overview"></a>
 ### musician_data_overview - 音乐人数据概况
 
 说明 : 音乐人登录后调用此接口,可获取统计数据概况
@@ -6827,6 +7218,7 @@ let result = client.musician_data_overview(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_play_trend"></a>
 ### musician_play_trend - 音乐人播放趋势
 
 说明 : 音乐人登录后调用此接口,可获取歌曲播放趋势
@@ -6846,6 +7238,7 @@ let result = client.musician_play_trend(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_cloudbean"></a>
 ### musician_cloudbean - 账号云豆数
 
 说明 : 音乐人登录后调用此接口,可获取账号云豆数
@@ -6861,6 +7254,7 @@ let result = client.musician_cloudbean(&query).await.unwrap();
 
 ---
 
+<a id="method-musician_cloudbean_obtain"></a>
 ### musician_cloudbean_obtain - 领取云豆
 
 说明 : 音乐人登录后调用此接口,可领取已完成的音乐人任务的云豆奖励
@@ -6880,8 +7274,10 @@ let result = client.musician_cloudbean_obtain(&query).await.unwrap();
 
 ---
 
+<a id="cat-fans"></a>
 ## 👥 粉丝中心
 
+<a id="method-fanscenter_overview_get"></a>
 ### fanscenter_overview_get - 粉丝中心概览
 
 说明 : 调用此接口获取粉丝中心概览数据
@@ -6897,6 +7293,7 @@ let result = client.fanscenter_overview_get(&query).await.unwrap();
 
 ---
 
+<a id="method-fanscenter_trend_list"></a>
 ### fanscenter_trend_list - 粉丝趋势列表
 
 说明 : 调用此接口获取粉丝趋势列表数据
@@ -6912,6 +7309,7 @@ let result = client.fanscenter_trend_list(&query).await.unwrap();
 
 ---
 
+<a id="method-fanscenter_basicinfo_age_get"></a>
 ### fanscenter_basicinfo_age_get - 粉丝年龄分布
 
 说明 : 调用此接口获取粉丝年龄分布数据
@@ -6927,6 +7325,7 @@ let result = client.fanscenter_basicinfo_age_get(&query).await.unwrap();
 
 ---
 
+<a id="method-fanscenter_basicinfo_gender_get"></a>
 ### fanscenter_basicinfo_gender_get - 粉丝性别分布
 
 说明 : 调用此接口获取粉丝性别分布数据
@@ -6942,6 +7341,7 @@ let result = client.fanscenter_basicinfo_gender_get(&query).await.unwrap();
 
 ---
 
+<a id="method-fanscenter_basicinfo_province_get"></a>
 ### fanscenter_basicinfo_province_get - 粉丝省份分布
 
 说明 : 调用此接口获取粉丝省份分布数据
@@ -6957,8 +7357,10 @@ let result = client.fanscenter_basicinfo_province_get(&query).await.unwrap();
 
 ---
 
+<a id="cat-ugc"></a>
 ## 📚 UGC 百科
 
+<a id="method-ugc_song_get"></a>
 ### ugc_song_get - 歌曲简要百科信息
 
 说明 : 登录后调用此接口,传入歌曲 id,可获取对应的歌曲简要百科信息
@@ -6976,6 +7378,7 @@ let result = client.ugc_song_get(&query).await.unwrap();
 
 ---
 
+<a id="method-ugc_artist_get"></a>
 ### ugc_artist_get - 歌手简要百科信息
 
 说明 : 登录后调用此接口,传入歌手 id,可获取对应的歌手简要百科信息
@@ -6993,6 +7396,7 @@ let result = client.ugc_artist_get(&query).await.unwrap();
 
 ---
 
+<a id="method-ugc_album_get"></a>
 ### ugc_album_get - 专辑简要百科信息
 
 说明 : 登录后调用此接口,传入专辑 id,可获取对应的专辑简要百科信息
@@ -7010,6 +7414,7 @@ let result = client.ugc_album_get(&query).await.unwrap();
 
 ---
 
+<a id="method-ugc_mv_get"></a>
 ### ugc_mv_get - MV 简要百科信息
 
 说明 : 登录后调用此接口,传入 MV id,可获取对应的 MV 简要百科信息
@@ -7027,6 +7432,7 @@ let result = client.ugc_mv_get(&query).await.unwrap();
 
 ---
 
+<a id="method-ugc_detail"></a>
 ### ugc_detail - 用户贡献内容
 
 说明 : 登录后调用此接口,可获取当前登录用户贡献内容
@@ -7046,6 +7452,7 @@ let result = client.ugc_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-ugc_artist_search"></a>
 ### ugc_artist_search - 搜索歌手(百科)
 
 说明 : 登录后调用此接口,传入歌手名关键字或者歌手 id,可获取搜索到的歌手信息
@@ -7065,6 +7472,7 @@ let result = client.ugc_artist_search(&query).await.unwrap();
 
 ---
 
+<a id="method-ugc_user_devote"></a>
 ### ugc_user_devote - 用户贡献条目、积分、云贝数量
 
 说明 : 登录后调用此接口,可获取当前登录用户贡献条目、积分、云贝数量
@@ -7080,8 +7488,10 @@ let result = client.ugc_user_devote(&query).await.unwrap();
 
 ---
 
+<a id="cat-listentogether"></a>
 ## 🎧 一起听
 
+<a id="method-listentogether_room_create"></a>
 ### listentogether_room_create - 创建一起听房间
 
 说明 : 登录后调用此接口,可创建一起听房间
@@ -7097,6 +7507,7 @@ let result = client.listentogether_room_create(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_room_check"></a>
 ### listentogether_room_check - 检查一起听房间
 
 说明 : 调用此接口,可检查一起听房间状态
@@ -7112,6 +7523,7 @@ let result = client.listentogether_room_check(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_accept"></a>
 ### listentogether_accept - 接受一起听邀请
 
 说明 : 调用此接口,可接受一起听邀请
@@ -7127,6 +7539,7 @@ let result = client.listentogether_accept(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_status"></a>
 ### listentogether_status - 一起听状态
 
 说明 : 调用此接口,可获取一起听状态
@@ -7142,6 +7555,7 @@ let result = client.listentogether_status(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_heatbeat"></a>
 ### listentogether_heatbeat - 一起听心跳
 
 说明 : 调用此接口,发送一起听心跳以保持连接
@@ -7157,6 +7571,7 @@ let result = client.listentogether_heatbeat(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_play_command"></a>
 ### listentogether_play_command - 一起听播放命令
 
 说明 : 调用此接口,发送一起听播放命令
@@ -7172,6 +7587,7 @@ let result = client.listentogether_play_command(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_sync_list_command"></a>
 ### listentogether_sync_list_command - 一起听同步列表命令
 
 说明 : 调用此接口,发送一起听同步列表命令
@@ -7187,6 +7603,7 @@ let result = client.listentogether_sync_list_command(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_sync_playlist_get"></a>
 ### listentogether_sync_playlist_get - 获取一起听同步播放列表
 
 说明 : 调用此接口,获取一起听同步播放列表
@@ -7202,6 +7619,7 @@ let result = client.listentogether_sync_playlist_get(&query).await.unwrap();
 
 ---
 
+<a id="method-listentogether_end"></a>
 ### listentogether_end - 结束一起听
 
 说明 : 调用此接口,可结束一起听
@@ -7217,8 +7635,10 @@ let result = client.listentogether_end(&query).await.unwrap();
 
 ---
 
+<a id="cat-broadcast"></a>
 ## 📡 广播电台
 
+<a id="method-broadcast_category_region_get"></a>
 ### broadcast_category_region_get - 广播电台分类/地区信息
 
 说明 : 调用此接口,获取广播电台分类/地区信息
@@ -7234,6 +7654,7 @@ let result = client.broadcast_category_region_get(&query).await.unwrap();
 
 ---
 
+<a id="method-broadcast_channel_list"></a>
 ### broadcast_channel_list - 广播电台全部电台
 
 说明 : 调用此接口,获取广播电台全部电台
@@ -7251,6 +7672,7 @@ let result = client.broadcast_channel_list(&query).await.unwrap();
 
 ---
 
+<a id="method-broadcast_channel_currentinfo"></a>
 ### broadcast_channel_currentinfo - 广播电台信息
 
 说明 : 调用此接口,传入电台 id,获取广播电台信息
@@ -7268,6 +7690,7 @@ let result = client.broadcast_channel_currentinfo(&query).await.unwrap();
 
 ---
 
+<a id="method-broadcast_channel_collect_list"></a>
 ### broadcast_channel_collect_list - 广播电台我的收藏
 
 说明 : 调用此接口,获取广播电台我的收藏
@@ -7285,6 +7708,7 @@ let result = client.broadcast_channel_collect_list(&query).await.unwrap();
 
 ---
 
+<a id="method-broadcast_sub"></a>
 ### broadcast_sub - 广播电台订阅
 
 说明 : 调用此接口,可订阅/取消订阅广播电台
@@ -7300,10 +7724,12 @@ let result = client.broadcast_sub(&query).await.unwrap();
 
 ---
 
+<a id="cat-yunbianji"></a>
 ## 🧑‍💻 云小编
 
 > 云小编相关接口均需要登录。考试流程示例：`rep_ugc_exam_start` → `rep_ugc_exam_question_single_get` → `rep_ugc_exam_submit` → `rep_ugc_exam_result_get`。
 
+<a id="method-middle_play_lottery_remain_chance"></a>
 ### middle_play_lottery_remain_chance - 抽奖剩余次数
 
 说明 : 查询云小编每日抽奖的剩余次数
@@ -7321,6 +7747,7 @@ let result = client.middle_play_lottery_remain_chance(&query).await.unwrap();
 
 ---
 
+<a id="method-middle_play_do_lottery"></a>
 ### middle_play_do_lottery - 每日抽奖
 
 说明 : 进行云小编每日抽奖
@@ -7338,6 +7765,7 @@ let result = client.middle_play_do_lottery(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_activity_get"></a>
 ### rep_ugc_activity_get - 云小编活动信息
 
 说明 : 获取云小编活动信息
@@ -7355,6 +7783,7 @@ let result = client.rep_ugc_activity_get(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_activity_collect"></a>
 ### rep_ugc_activity_collect - 领取任务积分
 
 说明 : 领取云小编任务积分
@@ -7372,6 +7801,7 @@ let result = client.rep_ugc_activity_collect(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_user_get"></a>
 ### rep_ugc_user_get - 云小编用户详情
 
 说明 : 获取当前用户在云小编中的详情
@@ -7389,6 +7819,7 @@ let result = client.rep_ugc_user_get(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_user_sign"></a>
 ### rep_ugc_user_sign - 云小编每日签到
 
 说明 : 云小编每日签到
@@ -7406,6 +7837,7 @@ let result = client.rep_ugc_user_sign(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_user_vip"></a>
 ### rep_ugc_user_vip - 会员任务状态
 
 说明 : 查询云小编会员任务状态。返回的 `data.status` 为 `10` / `20` 时可领取 1 日黑胶会员，`30` 表示已领取
@@ -7423,6 +7855,7 @@ let result = client.rep_ugc_user_vip(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_user_collect_vip"></a>
 ### rep_ugc_user_collect_vip - 领取一日会员
 
 说明 : 领取云小编任务的一日黑胶会员
@@ -7440,6 +7873,7 @@ let result = client.rep_ugc_user_collect_vip(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_exam_info_get"></a>
 ### rep_ugc_exam_info_get - 考试状态
 
 说明 : 获取云小编考试状态
@@ -7457,6 +7891,7 @@ let result = client.rep_ugc_exam_info_get(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_exam_start"></a>
 ### rep_ugc_exam_start - 开始考试
 
 说明 : 开始云小编考试
@@ -7474,6 +7909,7 @@ let result = client.rep_ugc_exam_start(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_exam_question_single_get"></a>
 ### rep_ugc_exam_question_single_get - 考试取题
 
 说明 : 获取云小编考试的下一道题
@@ -7493,6 +7929,7 @@ let result = client.rep_ugc_exam_question_single_get(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_exam_submit"></a>
 ### rep_ugc_exam_submit - 提交答案
 
 说明 : 提交单题答案
@@ -7514,6 +7951,7 @@ let result = client.rep_ugc_exam_submit(&query).await.unwrap();
 
 ---
 
+<a id="method-rep_ugc_exam_result_get"></a>
 ### rep_ugc_exam_result_get - 考试结果
 
 说明 : 获取云小编考试结果
@@ -7533,6 +7971,7 @@ let result = client.rep_ugc_exam_result_get(&query).await.unwrap();
 
 ---
 
+<a id="method-thinktank_audit_resource_detail"></a>
 ### thinktank_audit_resource_detail - 获取审核任务
 
 说明 : 获取云小编审核任务
@@ -7550,6 +7989,7 @@ let result = client.thinktank_audit_resource_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-thinktank_audit_resource_update"></a>
 ### thinktank_audit_resource_update - 提交审核任务
 
 说明 : 提交云小编审核结果
@@ -7572,8 +8012,10 @@ let result = client.thinktank_audit_resource_update(&query).await.unwrap();
 ---
 
 
+<a id="cat-other"></a>
 ## 🔧 其他
 
+<a id="method-hot_topic"></a>
 ### hot_topic - 获取热门话题
 
 说明 : 调用此接口,可获取热门话题
@@ -7593,6 +8035,7 @@ let result = client.hot_topic(&query).await.unwrap();
 
 ---
 
+<a id="method-topic_detail"></a>
 ### topic_detail - 获取话题详情
 
 说明 : 调用此接口,可获取话题详情
@@ -7610,6 +8053,7 @@ let result = client.topic_detail(&query).await.unwrap();
 
 ---
 
+<a id="method-topic_detail_event_hot"></a>
 ### topic_detail_event_hot - 获取话题详情热门动态
 
 说明 : 调用此接口,可获取话题详情热门动态
@@ -7627,6 +8071,7 @@ let result = client.topic_detail_event_hot(&query).await.unwrap();
 
 ---
 
+<a id="method-topic_sublist"></a>
 ### topic_sublist - 收藏的专栏
 
 说明 : 调用此接口,可获取收藏的专栏
@@ -7646,6 +8091,7 @@ let result = client.topic_sublist(&query).await.unwrap();
 
 ---
 
+<a id="method-calendar"></a>
 ### calendar - 音乐日历
 
 说明 : 登录后调用此接口,传入开始和结束时间,可获取音乐日历
@@ -7665,6 +8111,7 @@ let result = client.calendar(&query).await.unwrap();
 
 ---
 
+<a id="method-batch"></a>
 ### batch - 批量请求接口
 
 说明 : 登录后调用此接口,传入接口和对应原始参数,可批量请求接口
@@ -7680,6 +8127,7 @@ let result = client.batch(&query).await.unwrap();
 
 ---
 
+<a id="method-api"></a>
 ### api - 通用 API 请求
 
 说明 : 通用 API 请求接口
@@ -7695,6 +8143,7 @@ let result = client.api(&query).await.unwrap();
 
 ---
 
+<a id="method-inner_version"></a>
 ### inner_version - 内部版本接口
 
 说明 : 调用此接口,可获得内部版本号
@@ -7710,6 +8159,7 @@ let result = client.inner_version(&query).await.unwrap();
 
 ---
 
+<a id="method-weblog"></a>
 ### weblog - 日志上报
 
 说明 : 调用此接口进行日志上报
@@ -7725,6 +8175,7 @@ let result = client.weblog(&query).await.unwrap();
 
 ---
 
+<a id="method-eapi_decrypt"></a>
 ### eapi_decrypt - EAPI 解密
 
 说明 : 调用此接口,可进行 EAPI 解密
@@ -7740,6 +8191,7 @@ let result = client.eapi_decrypt(&query).await.unwrap();
 
 ---
 
+<a id="method-sign_happy_info"></a>
 ### sign_happy_info - 乐签信息
 
 说明 : 调用此接口,可获取乐签信息
@@ -7755,6 +8207,7 @@ let result = client.sign_happy_info(&query).await.unwrap();
 
 ---
 
+<a id="method-signin_progress"></a>
 ### signin_progress - 签到进度
 
 说明 : 调用此接口,可获得签到进度
@@ -7773,6 +8226,7 @@ let result = client.signin_progress(&query).await.unwrap();
 
 ---
 
+<a id="method-summary_annual"></a>
 ### summary_annual - 年度听歌报告
 
 说明 : 登录后调用此接口,可获取当前登录用户年度听歌报告,目前支持 2017-2024 年的报告
@@ -7790,6 +8244,7 @@ let result = client.summary_annual(&query).await.unwrap();
 
 ---
 
+<a id="method-threshold_detail_get"></a>
 ### threshold_detail_get - 阈值详情获取
 
 说明 : 调用此接口获取阈值详情
@@ -7805,6 +8260,7 @@ let result = client.threshold_detail_get(&query).await.unwrap();
 
 ---
 
+<a id="method-creator_authinfo_get"></a>
 ### creator_authinfo_get - 创作者认证信息获取
 
 说明 : 调用此接口获取创作者认证信息
@@ -7820,6 +8276,7 @@ let result = client.creator_authinfo_get(&query).await.unwrap();
 
 ---
 
+<a id="method-sheet_list"></a>
 ### sheet_list - 乐谱列表
 
 说明 : 调用此接口可以获取歌曲的乐谱列表
@@ -7837,6 +8294,7 @@ let result = client.sheet_list(&query).await.unwrap();
 
 ---
 
+<a id="method-sheet_preview"></a>
 ### sheet_preview - 乐谱内容
 
 说明 : 登录后调用此接口获取乐谱的内容
@@ -7854,6 +8312,7 @@ let result = client.sheet_preview(&query).await.unwrap();
 
 ---
 
+<a id="method-aidj_content_rcmd"></a>
 ### aidj_content_rcmd - 私人 DJ 推荐内容
 
 说明 : 调用此接口可以获取私人 DJ 的推荐内容(包括 DJ 声音和推荐歌曲)
@@ -7871,6 +8330,7 @@ let result = client.aidj_content_rcmd(&query).await.unwrap();
 
 ---
 
+<a id="method-music_first_listen_info"></a>
 ### music_first_listen_info - 回忆坐标
 
 说明 : 可以获取当前歌曲的回忆坐标信息(见手机 APP 百科页的回忆坐标功能)
@@ -7888,6 +8348,7 @@ let result = client.music_first_listen_info(&query).await.unwrap();
 
 ---
 
+<a id="method-verify_get_qr"></a>
 ### verify_get_qr - 验证接口-二维码生成
 
 说明 : 进行某些操作可能会触发验证,调用此接口生成二维码,使用 app 扫码后可解除验证
@@ -7910,6 +8371,7 @@ let result = client.verify_get_qr(&query).await.unwrap();
 
 ---
 
+<a id="method-verify_qrcodestatus"></a>
 ### verify_qrcodestatus - 验证接口-二维码检测
 
 说明 : 传入 `verify_get_qr` 接口返回的 `qr` 字符串,可检测二维码扫描状态
@@ -7929,6 +8391,7 @@ let result = client.verify_qrcodestatus(&query).await.unwrap();
 
 ---
 
+<a id="method-ad_get"></a>
 ### ad_get - 获取广告
 
 说明 : 获取广告，并在 `extra.reqId` 中返回广告上报所需的 `req_id`
@@ -7946,6 +8409,7 @@ let result = client.ad_get(&query).await.unwrap();
 
 ---
 
+<a id="method-ad_listening_rights"></a>
 ### ad_listening_rights - 免费听时长状态
 
 说明 : 获取免费听时长状态
@@ -7963,6 +8427,7 @@ let result = client.ad_listening_rights(&query).await.unwrap();
 
 ---
 
+<a id="method-ad_listening_rights_gain"></a>
 ### ad_listening_rights_gain - 领取免费听权益
 
 说明 : 看广告后领取免费听时长、云贝等权益。未显式传入 `reqUid` / `contextInfo` / `creativeType` 时，会先调用 `ad_get` 自动补齐广告参数。
@@ -8000,6 +8465,7 @@ let result = client.ad_listening_rights_gain(&query).await.unwrap();
 ---
 
 
+<a id="method-decrypt"></a>
 ### decrypt - 通用解密
 
 说明 : 解密 eapi / weapi / linuxapi / xeapi 的请求或返回数据，主要用于调试
@@ -8024,6 +8490,7 @@ let result = client.decrypt(&query).await.unwrap();
 
 ---
 
+<a id="method-lbs_city_code"></a>
 ### lbs_city_code - 多级行政区划数据
 
 说明 : 获取多级行政区划数据
@@ -8046,9 +8513,10 @@ let result = client.lbs_city_code(&query).await.unwrap();
 
 ### 致谢
 
+- [SPlayer-Dev/ncm-api-rs](https://github.com/SPlayer-Dev/ncm-api-rs) - 本仓库的上游 fork 来源
 - [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) - 原始 Node.js 实现
 - [Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) - 原始项目
 
 ### License
 
-本项目基于 [MIT License](LICENSE) 开源。
+本项目基于 [WTFPL](../LICENSE) 开源。

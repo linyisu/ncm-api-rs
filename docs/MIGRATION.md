@@ -2,7 +2,7 @@
 
 本文档记录与上游 `api-enhanced` 同步过程中产生的不兼容变更，以及从旧版本升级时需要注意的行为变化。
 
-当前对应版本：同步 `api-enhanced` 至 2026-10（PR #4），并继续同步至 `api-enhanced` v4.41.1（2026-11-06）。
+当前对应版本：同步 `api-enhanced` 至 2026-10（PR #4），并继续同步至 `api-enhanced` v4.41.1（2026-11-06）。同步状态见 [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md)。
 
 ---
 
