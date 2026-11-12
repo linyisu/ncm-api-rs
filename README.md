@@ -8,13 +8,13 @@
 [![License](https://img.shields.io/badge/license-WTFPL-brightgreen.svg)](LICENSE)
 [![Tokio](https://img.shields.io/badge/async-tokio-blue?logo=rust)](https://tokio.rs/)
 
-本仓库 fork 自 [SPlayer-Dev/ncm-api-rs](https://github.com/SPlayer-Dev/ncm-api-rs)，是 [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) 的 Rust 原生实现，无需 Node.js 运行时。
-
 </div>
 
 ---
 
 ## 简介
+
+本仓库 fork 自 [SPlayer-Dev/ncm-api-rs](https://github.com/SPlayer-Dev/ncm-api-rs)，是 [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) 的 Rust 原生实现，无需 Node.js 运行时。
 
 项目通过请求签名、Cookie 和伪造请求头调用网易云音乐官方 API，提供与 Node.js 版本一致的接口命名和参数风格。
 
