@@ -473,6 +473,9 @@ axum::serve(listener, app).await?;
 | `search_hot_detail` | 热搜列表(详细) |
 | `search_suggest` | 搜索建议 |
 | `search_suggest_pc` | 搜索建议(PC端) |
+| `search_suggest_mobile` | 搜索联想词(App 移动端) |
+| `search_song_list_page` | 新版单曲搜索(分页) |
+| `search_lyric` | 按歌词搜索 |
 | `search_multimatch` | 搜索多重匹配 |
 | `search_match` | 搜索匹配 |
 
@@ -530,8 +533,12 @@ axum::serve(listener, app).await?;
 | `comment_hot` | 热门评论 |
 | `comment_like` | 点赞评论 |
 | `comment_new` | 新版评论 |
+| `comment_add` | 发送评论 |
 | `comment_reply` | 回复评论 |
 | `comment_delete` | 删除评论 |
+| `comment_report` | 举报评论 |
+| `comment_default_text` | 评论默认文案 |
+| `comment_hotwall_square_info` | 热评墙广场信息 |
 | `comment_hug_list` | 抱一抱列表 |
 | `comment_info_list` | 评论统计 |
 | `hug_comment` | 抱一抱评论 |
@@ -678,6 +685,7 @@ axum::serve(listener, app).await?;
 | `homepage_block_page` | 首页-发现 |
 | `homepage_dragon_ball` | 首页圆形图标入口 |
 | `banner` | 首页 Banner |
+| `banner_v3` | 首页轮播(v3) |
 | `daily_signin` | 每日签到 |
 | `personal_fm` | 私人 FM |
 | `personal_fm_mode` | 私人 FM 模式 |
@@ -748,6 +756,7 @@ axum::serve(listener, app).await?;
 | `event` | 动态列表 |
 | `event_del` | 删除动态 |
 | `event_forward` | 转发动态 |
+| `event_search` | 动态搜索 |
 
 </details>
 
@@ -952,6 +961,11 @@ axum::serve(listener, app).await?;
 | `music_first_listen_info` | 回忆坐标 |
 | `verify_get_qr` | 验证二维码 |
 | `verify_qrcodestatus` | 二维码状态 |
+| `ad_get` | 获取广告 |
+| `ad_listening_rights` | 免费听时长状态 |
+| `ad_listening_rights_gain` | 领取看广告权益 |
+| `decrypt` | 通用解密 |
+| `lbs_city_code` | 多级行政区划数据 |
 
 </details>
 
@@ -1025,6 +1039,21 @@ axum::serve(listener, app).await?;
 | `yunbei_task_finish_v1` | 云贝广告任务 - 完成任务领取云贝 |
 | `yunbei_task_list_v1` | 云贝广告任务 - 查询今日任务状态 |
 | `yunbei_task_recommend_song` | 云贝广告任务 - 获取推荐歌曲 |
+
+#### 上游同步新增（2026-11）
+
+同步 api-enhanced v4.41.1（2026-11-06）新增的 v9.6.13 客户端接口：
+
+| 方法名 | 说明 |
+|--------|------|
+| `ad_listening_rights_gain` | 领取看广告免费听/云贝权益 |
+| `banner_v3` | 首页轮播 v3 |
+| `comment_default_text` | 评论默认文案 |
+| `comment_hotwall_square_info` | 热评墙广场信息 |
+| `event_search` | 动态搜索 |
+| `search_lyric` | 按歌词搜索 |
+| `search_song_list_page` | 新版单曲搜索（分页） |
+| `search_suggest_mobile` | 搜索联想词（App 移动端） |
 
 ## 扩展接口
 

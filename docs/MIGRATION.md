@@ -2,7 +2,24 @@
 
 本文档记录与上游 `api-enhanced` 同步过程中产生的不兼容变更，以及从旧版本升级时需要注意的行为变化。
 
-当前对应版本：同步 `api-enhanced` 至 2026-10（PR #4）。
+当前对应版本：同步 `api-enhanced` 至 2026-10（PR #4），并继续同步至 `api-enhanced` v4.41.1（2026-11-06）。
+
+---
+
+## 2026-11 继续同步
+
+同步 `api-enhanced` v4.41.1 中 v9.6.13 客户端新增的 7 个接口：
+
+- `banner_v3`
+- `comment_default_text`
+- `comment_hotwall_square_info`
+- `event_search`
+- `search_lyric`
+- `search_song_list_page`
+- `search_suggest_mobile`
+- `ad_listening_rights_gain`（补齐此前未同步的看广告领取权益接口）
+
+同时同步了上游的 cookie 读取逻辑：当 `query.cookie` 为空时，会尝试从 `query.headers` 中读取 `Cookie` 请求头。该行为不影响现有调用方式。
 
 ---
 
@@ -208,4 +225,3 @@ pub async fn voice_upload(
 以下接口依赖 Node.js 运行时能力，暂未同步：
 
 - `register_checktoken_v2`：依赖 jsdom 运行易盾 SDK，当前以静态 token 兜底。
-- `ad_listening_rights_gain`：看广告领取免费听权益。

@@ -258,7 +258,7 @@ impl ApiClient {
             .filter(|t| *t > 0.0)
             .unwrap_or(play_time);
 
-        let ctx = Ctx::from_cookie(query.cookie.as_deref().unwrap_or(""));
+        let ctx = Ctx::from_cookie(query.cookie_or_header().unwrap_or(""));
         if ctx.token.is_empty() {
             return bad(401, "缺少 MUSIC_U 鉴权令牌");
         }

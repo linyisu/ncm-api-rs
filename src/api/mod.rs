@@ -51,9 +51,12 @@ mod search;
 mod search_default;
 mod search_hot;
 mod search_hot_detail;
+mod search_lyric;
 mod search_match;
 mod search_multimatch;
+mod search_song_list_page;
 mod search_suggest;
+mod search_suggest_mobile;
 mod search_suggest_pc;
 
 // ---- 听歌识曲 ----
@@ -130,11 +133,13 @@ mod album_sublist;
 mod comment;
 mod comment_add;
 mod comment_album;
+mod comment_default_text;
 mod comment_delete;
 mod comment_dj;
 mod comment_event;
 mod comment_floor;
 mod comment_hot;
+mod comment_hotwall_square_info;
 mod comment_hug_list;
 mod comment_info_list;
 mod comment_like;
@@ -235,6 +240,7 @@ mod radio_sport_get;
 
 // ---- Banner ----
 mod banner;
+mod banner_v3;
 
 // ---- 签到 ----
 mod daily_signin;
@@ -329,6 +335,7 @@ mod event;
 mod event_del;
 mod event_forward;
 mod event_privacy;
+mod event_search;
 mod user_event_all;
 
 // ---- 发送/分享 ----
@@ -528,6 +535,7 @@ mod thinktank_audit_resource_update;
 // ---- 其他 ----
 mod ad_get;
 mod ad_listening_rights;
+mod ad_listening_rights_gain;
 #[allow(clippy::module_inception)]
 mod api;
 mod batch;
@@ -596,6 +604,16 @@ impl Query {
         self.params.get(key).map(|s| s.as_str())
     }
 
+    /// 获取 cookie：优先使用 `cookie` 字段，其次从 `headers` 中读取 `Cookie`
+    pub(crate) fn cookie_or_header(&self) -> Option<&str> {
+        self.cookie.as_deref().or_else(|| {
+            self.headers
+                .iter()
+                .find(|(k, _)| k.eq_ignore_ascii_case("cookie"))
+                .map(|(_, v)| v.as_str())
+        })
+    }
+
     /// 获取参数值，若不存在则返回默认值
     pub fn get_or(&self, key: &str, default: &str) -> String {
         self.params
@@ -639,7 +657,7 @@ impl Query {
 
     /// 覆盖 cookie 中的若干字段（如强制 os=android）
     pub(crate) fn with_cookie(&self, overrides: &[(&str, &str)]) -> Query {
-        let mut map = crate::util::cookie::cookie_to_json(self.cookie.as_deref().unwrap_or(""));
+        let mut map = crate::util::cookie::cookie_to_json(self.cookie_or_header().unwrap_or(""));
         for (k, v) in overrides {
             map.insert(k.to_string(), v.to_string());
         }
@@ -658,7 +676,7 @@ impl Query {
                 .filter(|s| !s.is_empty())
                 .map(CryptoType::from)
                 .unwrap_or(crypto),
-            cookie: self.cookie.clone(),
+            cookie: self.cookie_or_header().map(str::to_string),
             ua: self.ua.clone(),
             proxy: self.proxy.clone(),
             real_ip: self.real_ip.clone(),
@@ -670,5 +688,29 @@ impl Query {
             headers: self.headers.clone(),
             timeout: self.timeout,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cookie_prefers_query_cookie() {
+        let query = Query::new().cookie("MUSIC_U=query").param("x", "1");
+        let mut query = query;
+        query
+            .headers
+            .insert("Cookie".to_string(), "MUSIC_U=header".to_string());
+        assert_eq!(query.cookie_or_header(), Some("MUSIC_U=query"));
+    }
+
+    #[test]
+    fn cookie_falls_back_to_header_case_insensitively() {
+        let mut query = Query::new();
+        query
+            .headers
+            .insert("cookie".to_string(), "MUSIC_U=header".to_string());
+        assert_eq!(query.cookie_or_header(), Some("MUSIC_U=header"));
     }
 }

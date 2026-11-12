@@ -33,7 +33,7 @@ impl ApiClient {
             query.get_or("key", "")
         );
         if query.get_or("platform", "pc") == "web" {
-            let device_id = cookie_to_json(query.cookie.as_deref().unwrap_or(""))
+            let device_id = cookie_to_json(query.cookie_or_header().unwrap_or(""))
                 .remove("sDeviceId")
                 .unwrap_or_else(|| format!("unknown-{}", rand::random::<u32>() % 1_000_000));
             url.push_str(&format!(

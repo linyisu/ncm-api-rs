@@ -1868,6 +1868,83 @@ let result = client.search_suggest_pc(&query).await?;
 ---
 
 
+### search_suggest_mobile - 搜索联想词（App 移动端）
+
+说明 : 获取 App 搜索框下拉联想结果：第 0 条为直 hit 歌曲卡，其后为联想词列表，包含高亮分段信息
+
+**必选参数 :** `keyword` : 搜索关键词（注意参数名必须是 `keyword`，传 `keywords` / `s` 会返回 HTTP 400）
+
+**方法名 :** `search_suggest_mobile`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("keyword", "如果呢");
+let result = client.search_suggest_mobile(&query).await.unwrap();
+```
+
+---
+
+### search_song_list_page - 新版单曲搜索（分页）
+
+说明 : 使用 v9.6.13 客户端新版单曲搜索接口，返回 `resources` 数组与 `hasMore` 分页标记
+
+**必选参数 :** `keyword` : 搜索关键词
+
+**可选参数 :** `limit` : 返回数量，默认 `30` ; `offset` : 偏移量，默认 `0` ; `scene` : 场景，默认 `normal`
+
+**方法名 :** `search_song_list_page`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("keyword", "如果呢")
+    .param("limit", "30");
+let result = client.search_song_list_page(&query).await.unwrap();
+```
+
+---
+
+### search_lyric - 按歌词搜索
+
+说明 : 传入歌词片段搜索包含该歌词的歌曲，返回 `resources` 数组（含匹配歌词行、高亮文本和歌曲详情）
+
+**必选参数 :** `keyword` : 歌词片段
+
+**可选参数 :** `limit` : 返回数量，默认 `30` ; `offset` : 偏移量，默认 `0`
+
+**方法名 :** `search_lyric`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("keyword", "天青色等烟雨");
+let result = client.search_lyric(&query).await.unwrap();
+```
+
+---
+
+### event_search - 动态搜索
+
+说明 : 传入关键词搜索用户发布的动态
+
+**必选参数 :** `keyword` : 关键词
+
+**可选参数 :** `limit` : 返回数量，默认 `30` ; `offset` : 偏移量，默认 `0`
+
+**方法名 :** `event_search`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("keyword", "周杰伦");
+let result = client.event_search(&query).await.unwrap();
+```
+
+---
+
+
 ## 歌单相关
 
 ### 新建歌单
@@ -2738,6 +2815,41 @@ let query = Query::new()
     .param("id", "347230")
     .param("content", "好听");
 let result = client.comment(&query).await?;
+```
+
+---
+
+
+### comment_default_text - 评论默认文案
+
+说明 : 获取指定评论区输入框的默认提示文案数组
+
+**必选参数 :** `threadId` : 评论区 ID，如 `A_EV_2_6559519868_32953014`
+
+**方法名 :** `comment_default_text`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("threadId", "A_EV_2_6559519868_32953014");
+let result = client.comment_default_text(&query).await.unwrap();
+```
+
+---
+
+### comment_hotwall_square_info - 热评墙广场信息
+
+说明 : 获取今天热评墙广场的配置信息
+
+**参数 :** 无
+
+**方法名 :** `comment_hotwall_square_info`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.comment_hotwall_square_info(&query).await.unwrap();
 ```
 
 ---
@@ -4441,6 +4553,24 @@ let result = client.banner(&query).await.unwrap();
 ```
 
 ---
+
+### banner_v3 - 首页轮播（v3）
+
+说明 : 获取 v3 版首页轮播图（v9.6.13 客户端使用版本）
+
+**可选参数 :** `clientType` : 客户端类型，默认 `android`
+
+**方法名 :** `banner_v3`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("clientType", "android");
+let result = client.banner_v3(&query).await.unwrap();
+```
+
+---
+
 
 ### daily_signin - 签到
 
@@ -7832,6 +7962,43 @@ let result = client.ad_listening_rights(&query).await.unwrap();
 ```
 
 ---
+
+### ad_listening_rights_gain - 领取免费听权益
+
+说明 : 看广告后领取免费听时长、云贝等权益。未显式传入 `reqUid` / `contextInfo` / `creativeType` 时，会先调用 `ad_get` 自动补齐广告参数。
+
+**可选参数 :**
+
+- `reqUid` : 广告请求 ID，默认从 `ad_get` 返回的 `extJson.contextInfo.req_id` 获取
+- `contextInfo` : 广告上下文，默认从广告对象获取
+- `creativeType` : 广告创意类型，激励视频场景通常为 `36`
+- `generalRightsInfo` : 广告下发的权益配置 JSON 字符串
+- `rightsGainMethod` : 权益领取方式，`1` 曝光、`2` 曝光+点击、`3` 曝光+下载、`4` 点击+停留、`5` 曝光或点击停留、`6` 拉新曝光/下载，默认 `2`
+- `exposureTime` / `clickTime` : 曝光/点击时间戳（毫秒），默认当前时间
+- `uid` : 当前登录用户 id
+- `extraRightsType` / `extraRightsGainMethod` / `extraRightsGainDuration` / `nextRightsGainDuration` : 额外权益配置
+- `rightsGainType` / `rightsGainDuration` / `gainMethodStep` : 权益类型、时长和领取步骤
+- `rightsExtJson` : 权益扩展信息
+- `appInfo` : 下载类广告的应用信息 JSON 字符串
+- `installed` : 应用是否已安装
+- `playContinuously` : 是否连续播放
+- `source` : 来源标识
+- `sniffTime` : 嗅探时间，`rightsGainMethod` 为 `3` 或 `6` 时使用
+
+**方法名 :** `ad_listening_rights_gain`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("reqUid", "xxx")
+    .param("rightsGainMethod", "2")
+    .param("creativeType", "36");
+let result = client.ad_listening_rights_gain(&query).await.unwrap();
+```
+
+---
+
 
 ### decrypt - 通用解密
 
