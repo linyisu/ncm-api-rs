@@ -24,24 +24,24 @@
 - [MV 相关](#cat-mv)
 - [视频相关](#cat-video)
 - [电台相关](#cat-dj)
-- [🎯 推荐相关](#cat-recommend)
-- [🏆 排行榜相关](#cat-ranking)
+- [推荐相关](#cat-recommend)
+- [排行榜相关](#cat-ranking)
 - [云盘相关](#cat-cloud)
-- [💌 私信相关](#cat-message)
-- [👑 VIP/会员](#cat-vip)
-- [🌟 云贝](#cat-yunbei)
-- [👣 听歌足迹](#cat-listen)
-- [🎨 风格/曲风](#cat-style)
-- [💿 数字专辑](#cat-digital-album)
-- [🎙️ 声音/播客](#cat-voice)
-- [🧘 助眠解压](#cat-sati)
-- [🎵 音乐人](#cat-musician)
-- [👥 粉丝中心](#cat-fans)
-- [📚 UGC 百科](#cat-ugc)
-- [🎧 一起听](#cat-listentogether)
-- [📡 广播电台](#cat-broadcast)
-- [🧑‍💻 云小编](#cat-yunbianji)
-- [🔧 其他](#cat-other)
+- [私信相关](#cat-message)
+- [VIP/会员](#cat-vip)
+- [云贝](#cat-yunbei)
+- [听歌足迹](#cat-listen)
+- [风格/曲风](#cat-style)
+- [数字专辑](#cat-digital-album)
+- [声音/播客](#cat-voice)
+- [助眠解压](#cat-sati)
+- [音乐人](#cat-musician)
+- [粉丝中心](#cat-fans)
+- [UGC 百科](#cat-ugc)
+- [一起听](#cat-listentogether)
+- [广播电台](#cat-broadcast)
+- [云小编](#cat-yunbianji)
+- [其他](#cat-other)
 
 ---
 
@@ -4561,7 +4561,7 @@ let result = client.radio_sport_get(&query).await.unwrap();
 
 
 <a id="cat-recommend"></a>
-## 🎯 推荐相关
+## 推荐相关
 
 <a id="method-personalized"></a>
 ### personalized - 推荐歌单
@@ -5109,7 +5109,7 @@ let result = client.recommend_songs_v1(&query).await.unwrap();
 
 
 <a id="cat-ranking"></a>
-## 🏆 排行榜相关
+## 排行榜相关
 
 <a id="method-toplist"></a>
 ### toplist - 所有榜单
@@ -5571,7 +5571,7 @@ let result = client.song_cloud_download(&query).await.unwrap();
 
 
 <a id="cat-message"></a>
-## 💌 私信相关
+## 私信相关
 
 <a id="method-msg_private"></a>
 ### msg_private - 通知-私信
@@ -5869,7 +5869,7 @@ let result = client.event_forward(&query).await.unwrap();
 ---
 
 <a id="cat-vip"></a>
-## 👑 VIP/会员
+## VIP/会员
 
 <a id="method-vip_info"></a>
 ### vip_info - 获取 VIP 信息
@@ -6109,7 +6109,7 @@ let result = client.vip_tasks_v1(&query).await.unwrap();
 
 
 <a id="cat-yunbei"></a>
-## 🌟 云贝
+## 云贝
 
 <a id="method-yunbei"></a>
 ### yunbei - 云贝签到信息
@@ -6364,7 +6364,7 @@ let result = client.yunbei_task_finish_v1(&query).await.unwrap();
 
 
 <a id="cat-listen"></a>
-## 👣 听歌足迹
+## 听歌足迹
 
 <a id="method-listen_data_year_report"></a>
 ### listen_data_year_report - 年度听歌足迹
@@ -6596,7 +6596,7 @@ let result = client.listen_data_song_play_rank(&query).await.unwrap();
 
 
 <a id="cat-style"></a>
-## 🎨 风格/曲风
+## 风格/曲风
 
 <a id="method-style_list"></a>
 ### style_list - 曲风列表
@@ -6734,7 +6734,7 @@ let result = client.style_preference(&query).await.unwrap();
 ---
 
 <a id="cat-digital-album"></a>
-## 💿 数字专辑
+## 数字专辑
 
 <a id="method-digital_album_detail"></a>
 ### digital_album_detail - 数字专辑详情
@@ -6816,7 +6816,7 @@ let result = client.digital_album_sales(&query).await.unwrap();
 ---
 
 <a id="cat-voice"></a>
-## 🎙️ 声音/播客
+## 声音/播客
 
 <a id="method-voice_upload"></a>
 ### voice_upload - 播客上传声音
@@ -7022,7 +7022,7 @@ let result = client.voicelist_my_created(&query).await.unwrap();
 
 
 <a id="cat-sati"></a>
-## 🧘 助眠解压
+## 助眠解压
 
 <a id="method-sati_tag_list"></a>
 ### sati_tag_list - 标签列表
@@ -7136,7 +7136,7 @@ let result = client.sati_timescene_resources_get(&query).await.unwrap();
 
 
 <a id="cat-musician"></a>
-## 🎵 音乐人
+## 音乐人
 
 <a id="method-musician_sign"></a>
 ### musician_sign - 音乐人签到
@@ -7275,7 +7275,7 @@ let result = client.musician_cloudbean_obtain(&query).await.unwrap();
 ---
 
 <a id="cat-fans"></a>
-## 👥 粉丝中心
+## 粉丝中心
 
 <a id="method-fanscenter_overview_get"></a>
 ### fanscenter_overview_get - 粉丝中心概览
@@ -7358,7 +7358,7 @@ let result = client.fanscenter_basicinfo_province_get(&query).await.unwrap();
 ---
 
 <a id="cat-ugc"></a>
-## 📚 UGC 百科
+## UGC 百科
 
 <a id="method-ugc_song_get"></a>
 ### ugc_song_get - 歌曲简要百科信息
@@ -7489,7 +7489,7 @@ let result = client.ugc_user_devote(&query).await.unwrap();
 ---
 
 <a id="cat-listentogether"></a>
-## 🎧 一起听
+## 一起听
 
 <a id="method-listentogether_room_create"></a>
 ### listentogether_room_create - 创建一起听房间
@@ -7636,7 +7636,7 @@ let result = client.listentogether_end(&query).await.unwrap();
 ---
 
 <a id="cat-broadcast"></a>
-## 📡 广播电台
+## 广播电台
 
 <a id="method-broadcast_category_region_get"></a>
 ### broadcast_category_region_get - 广播电台分类/地区信息
@@ -7725,7 +7725,7 @@ let result = client.broadcast_sub(&query).await.unwrap();
 ---
 
 <a id="cat-yunbianji"></a>
-## 🧑‍💻 云小编
+## 云小编
 
 > 云小编相关接口均需要登录。考试流程示例：`rep_ugc_exam_start` → `rep_ugc_exam_question_single_get` → `rep_ugc_exam_submit` → `rep_ugc_exam_result_get`。
 
@@ -8013,7 +8013,7 @@ let result = client.thinktank_audit_resource_update(&query).await.unwrap();
 
 
 <a id="cat-other"></a>
-## 🔧 其他
+## 其他
 
 <a id="method-hot_topic"></a>
 ### hot_topic - 获取热门话题

@@ -304,7 +304,7 @@
 | [`dj_difm_subscribe_channels_get`](API.md#method-dj_difm_subscribe_channels_get) | DIFM 收藏列表 |
 | [`radio_sport_get`](API.md#method-radio_sport_get) | 跑步漫游 |
 
-## 🎯 推荐相关
+## 推荐相关
 
 | 方法 | 说明 |
 |------|------|
@@ -339,7 +339,7 @@
 | [`recommend_category_songs`](API.md#method-recommend_category_songs) | 每日风格推荐歌曲 |
 | [`recommend_songs_v1`](API.md#method-recommend_songs_v1) | 每日推荐歌曲 v1 |
 
-## 🏆 排行榜相关
+## 排行榜相关
 
 | 方法 | 说明 |
 |------|------|
@@ -372,7 +372,7 @@
 | [`cloud_upload_complete`](API.md#method-cloud_upload_complete) | 完成上传导入 |
 | [`song_cloud_download`](API.md#method-song_cloud_download) | 云盘歌曲下载链接 |
 
-## 💌 私信相关
+## 私信相关
 
 | 方法 | 说明 |
 |------|------|
@@ -392,7 +392,7 @@
 | [`event_del`](API.md#method-event_del) | 删除用户动态 |
 | [`event_forward`](API.md#method-event_forward) | 转发用户动态 |
 
-## 👑 VIP/会员
+## VIP/会员
 
 | 方法 | 说明 |
 |------|------|
@@ -410,7 +410,7 @@
 | [`vip_sign_detail`](API.md#method-vip_sign_detail) | 黑胶乐签打卡详情 |
 | [`vip_tasks_v1`](API.md#method-vip_tasks_v1) | 会员任务（新版） |
 
-## 🌟 云贝
+## 云贝
 
 | 方法 | 说明 |
 |------|------|
@@ -429,7 +429,7 @@
 | [`yunbei_task_recommend_song`](API.md#method-yunbei_task_recommend_song) | 云贝任务推荐歌曲 |
 | [`yunbei_task_finish_v1`](API.md#method-yunbei_task_finish_v1) | 完成云贝广告任务 |
 
-## 👣 听歌足迹
+## 听歌足迹
 
 | 方法 | 说明 |
 |------|------|
@@ -447,7 +447,7 @@
 | [`record_recent_voice`](API.md#method-record_recent_voice) | 最近播放-声音 |
 | [`listen_data_song_play_rank`](API.md#method-listen_data_song_play_rank) | 歌曲播放排行 |
 
-## 🎨 风格/曲风
+## 风格/曲风
 
 | 方法 | 说明 |
 |------|------|
@@ -459,7 +459,7 @@
 | [`style_playlist`](API.md#method-style_playlist) | 曲风-歌单 |
 | [`style_preference`](API.md#method-style_preference) | 曲风偏好 |
 
-## 💿 数字专辑
+## 数字专辑
 
 | 方法 | 说明 |
 |------|------|
@@ -468,7 +468,7 @@
 | [`digital_album_purchased`](API.md#method-digital_album_purchased) | 我的数字专辑 |
 | [`digital_album_sales`](API.md#method-digital_album_sales) | 数字专辑销量 |
 
-## 🎙️ 声音/播客
+## 声音/播客
 
 | 方法 | 说明 |
 |------|------|
@@ -483,7 +483,7 @@
 | [`voicelist_trans`](API.md#method-voicelist_trans) | 播客声音排序 |
 | [`voicelist_my_created`](API.md#method-voicelist_my_created) | 我创建的播客声音 |
 
-## 🧘 助眠解压
+## 助眠解压
 
 | 方法 | 说明 |
 |------|------|
@@ -494,7 +494,7 @@
 | [`sati_resource_sub_list`](API.md#method-sati_resource_sub_list) | 收藏列表 |
 | [`sati_timescene_resources_get`](API.md#method-sati_timescene_resources_get) | 时间场景推荐资源 |
 
-## 🎵 音乐人
+## 音乐人
 
 | 方法 | 说明 |
 |------|------|
@@ -507,7 +507,7 @@
 | [`musician_cloudbean`](API.md#method-musician_cloudbean) | 账号云豆数 |
 | [`musician_cloudbean_obtain`](API.md#method-musician_cloudbean_obtain) | 领取云豆 |
 
-## 👥 粉丝中心
+## 粉丝中心
 
 | 方法 | 说明 |
 |------|------|
@@ -517,7 +517,7 @@
 | [`fanscenter_basicinfo_gender_get`](API.md#method-fanscenter_basicinfo_gender_get) | 粉丝性别分布 |
 | [`fanscenter_basicinfo_province_get`](API.md#method-fanscenter_basicinfo_province_get) | 粉丝省份分布 |
 
-## 📚 UGC 百科
+## UGC 百科
 
 | 方法 | 说明 |
 |------|------|
@@ -529,7 +529,7 @@
 | [`ugc_artist_search`](API.md#method-ugc_artist_search) | 搜索歌手(百科) |
 | [`ugc_user_devote`](API.md#method-ugc_user_devote) | 用户贡献条目、积分、云贝数量 |
 
-## 🎧 一起听
+## 一起听
 
 | 方法 | 说明 |
 |------|------|
@@ -543,7 +543,7 @@
 | [`listentogether_sync_playlist_get`](API.md#method-listentogether_sync_playlist_get) | 获取一起听同步播放列表 |
 | [`listentogether_end`](API.md#method-listentogether_end) | 结束一起听 |
 
-## 📡 广播电台
+## 广播电台
 
 | 方法 | 说明 |
 |------|------|
@@ -553,7 +553,7 @@
 | [`broadcast_channel_collect_list`](API.md#method-broadcast_channel_collect_list) | 广播电台我的收藏 |
 | [`broadcast_sub`](API.md#method-broadcast_sub) | 广播电台订阅 |
 
-## 🧑‍💻 云小编
+## 云小编
 
 | 方法 | 说明 |
 |------|------|
@@ -573,7 +573,7 @@
 | [`thinktank_audit_resource_detail`](API.md#method-thinktank_audit_resource_detail) | 获取审核任务 |
 | [`thinktank_audit_resource_update`](API.md#method-thinktank_audit_resource_update) | 提交审核任务 |
 
-## 🔧 其他
+## 其他
 
 | 方法 | 说明 |
 |------|------|
