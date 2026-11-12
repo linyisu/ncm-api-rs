@@ -3,6 +3,8 @@
 > 本文档对应 [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) 的 Rust SDK 版本，涵盖所有已实现的接口。
 >
 > 所有接口方法均挂载在 `ApiClient` 上，通过 `Query` 对象传参。使用前请先阅读 [README](../README.md) 了解基本用法。
+>
+> 不兼容变更与升级注意事项请参阅 [MIGRATION.md](MIGRATION.md)。
 
 ---
 
@@ -29,6 +31,8 @@
 - [风格/曲风](#风格曲风)
 - [数字专辑](#数字专辑)
 - [声音/播客](#声音播客)
+- [助眠解压](#助眠解压)
+- [云小编](#云小编)
 - [音乐人](#音乐人)
 - [粉丝中心](#粉丝中心)
 - [UGC 百科](#ugc-百科)
@@ -74,6 +78,9 @@ let result = client.login(&query).await?;
 - `countrycode` : 国家码，用于国外手机号登录，例如美国传入 `1`
 - `md5_password` : md5 加密后的密码，传入后 `password` 参数将失效
 - `captcha` : 验证码，使用 `captcha_sent` 接口传入手机号获取验证码，调用此接口传入验证码可使用验证码登录，传入后 `password` 参数将失效
+- `sca` : 安全验证码，风控要求时传入
+
+登录成功时，返回 body 中会补充拼接后的 `cookie` 字段，并包含 `avatarImgIdStr`。
 
 **方法名 :** `login_cellphone`
 
@@ -95,7 +102,7 @@ let result = client.login_cellphone(&query).await?;
 
 #### 二维码 key 生成
 
-说明 : 调用此接口可生成一个二维码登录用的 key
+说明 : 调用此接口可生成一个二维码登录用的 key。返回结构为 `{ data: { unikey }, code }`，`unikey` 位于 `body.data.unikey`（与 Node.js 版一致）。
 
 **方法名 :** `login_qr_key`
 
@@ -103,6 +110,7 @@ let result = client.login_cellphone(&query).await?;
 ```rust
 let query = Query::new();
 let result = client.login_qr_key(&query).await?;
+let unikey = result.body["data"]["unikey"].as_str().unwrap_or_default();
 ```
 
 ---
@@ -113,7 +121,7 @@ let result = client.login_qr_key(&query).await?;
 
 **必选参数 :** `key` : 由 `login_qr_key` 接口生成
 
-**可选参数 :** `qrimg` : 传入后会额外返回二维码图片 base64 编码
+**可选参数 :** `qrimg` : 传入后会额外返回二维码图片（SVG data URL）; `platform` : 传 `web` 时会在二维码 URL 中附加 `chainId`，供网易云 App 扫码
 
 **方法名 :** `login_qr_create`
 
@@ -121,7 +129,8 @@ let result = client.login_qr_key(&query).await?;
 ```rust
 let query = Query::new()
     .param("key", "xxx")
-    .param("qrimg", "true");
+    .param("qrimg", "true")
+    .param("platform", "web");
 let result = client.login_qr_create(&query).await?;
 ```
 
@@ -129,7 +138,7 @@ let result = client.login_qr_create(&query).await?;
 
 #### 二维码检测扫码状态
 
-说明 : 轮询此接口可获取二维码扫码状态，800 为二维码过期，801 为等待扫码，802 为待确认，803 为授权登录成功（803 状态码下会返回 cookies）
+说明 : 轮询此接口可获取二维码扫码状态，800 为二维码过期，801 为等待扫码，802 为待确认，803 为授权登录成功（803 状态码下会返回 cookies）。授权成功时，set-cookie 会拼接后放入 `body.cookie`。
 
 **必选参数 :** `key` : 由 `login_qr_key` 接口生成
 
@@ -145,7 +154,7 @@ let result = client.login_qr_check(&query).await?;
 
 #### 游客登录
 
-说明 : 直接调用此接口，可获取游客 cookie，如果遇到其他接口未登录状态报 400 状态码需要验证的错误，可使用此接口获取游客 cookie 避免报错
+说明 : 直接调用此接口，可获取游客 cookie，如果遇到其他接口未登录状态报 400 状态码需要验证的错误，可使用此接口获取游客 cookie 避免报错。接口使用客户端当前设备 ID 注册，成功时会在 body 中返回拼接后的 `cookie`。
 
 **方法名 :** `register_anonimous`
 
@@ -327,6 +336,143 @@ let result = client.rebind(&query).await?;
 ```
 
 ---
+
+#### 发送安全验证码
+
+说明 : 发送安全验证码（风控验证场景）
+
+**可选参数 :** `ctcode` : 国家码，默认 `86`
+
+**方法名 :** `captcha_safe_sent`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("ctcode", "86");
+let result = client.captcha_safe_sent(&query).await?;
+```
+
+---
+
+#### 发送验证码 v1
+
+说明 : 客户端登录场景的手机验证码发送接口
+
+**必选参数 :** `phone` : 手机号
+
+**可选参数 :** `ctcode` : 国家码，默认 `86`
+
+**方法名 :** `captcha_sent_v1`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("phone", "13xxx");
+let result = client.captcha_sent_v1(&query).await?;
+```
+
+---
+
+#### 登录设备列表
+
+说明 : 登录后获取当前账号的登录设备列表
+
+**参数 :** 无
+
+**方法名 :** `device_list`
+
+**调用例子 :**
+```rust
+let query = Query::new();
+let result = client.device_list(&query).await?;
+```
+
+---
+
+#### 强制下线设备
+
+说明 : 登录后强制下线指定的登录设备
+
+**必选参数 :** `deviceKey` : 设备 key，可从 `device_list` 返回中获取
+
+**可选参数 :** `captcha` : 短信验证码，服务端要求验证时传入
+
+**方法名 :** `device_kickoff`
+
+**调用例子 :**
+```rust
+let query = Query::new()
+    .param("deviceKey", "xxx")
+    .param("captcha", "1234");
+let result = client.device_kickoff(&query).await?;
+```
+
+---
+
+#### 上报设备中心设备名称
+
+说明 : 修改当前设备在「登录设备管理」中显示的名称
+
+**必选参数 :** `deviceName` : 设备名称（兼容旧参数名 `name`）
+
+**方法名 :** `deviceinfo_center_upload`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("deviceName", "我的电脑");
+let result = client.deviceinfo_center_upload(&query).await?;
+```
+
+---
+
+#### 获取易盾 v3 token
+
+说明 : 实时获取易盾 v3 反作弊 token（不缓存）
+
+**参数 :** 无
+
+**方法名 :** `register_checktoken_v3`
+
+**调用例子 :**
+```rust
+let query = Query::new();
+let result = client.register_checktoken_v3(&query).await?;
+// result.body: { code, token, registered }
+```
+
+---
+
+#### 刷新 neapi 密钥配置
+
+说明 : 向服务端重新拉取 neapi 配置并刷新本地缓存，密钥本身不会返回
+
+**参数 :** 无
+
+**方法名 :** `register_neapikey`
+
+**调用例子 :**
+```rust
+let query = Query::new();
+let result = client.register_neapikey(&query).await?;
+// result.body: { version, updated, circleTime }
+```
+
+---
+
+#### 刷新 xeapi 公钥
+
+说明 : 重新向服务端申请 xeapi 公钥并刷新本地缓存
+
+**参数 :** 无
+
+**方法名 :** `register_xeapikey`
+
+**调用例子 :**
+```rust
+let query = Query::new();
+let result = client.register_xeapikey(&query).await?;
+```
+
+---
+
 
 ### 用户相关
 
@@ -861,6 +1007,41 @@ let result = client.get_userids(&query).await?;
 
 ---
 
+#### 修改动态可见权限
+
+说明 : 登录后修改本人动态的可见权限
+
+**必选参数 :** `evId` : 动态 id ; `privacy` : 可见权限，取值 `0` / `1` / `2` / `6`
+
+**方法名 :** `event_privacy`
+
+**调用例子 :**
+```rust
+let query = Query::new()
+    .param("evId", "A_EV_2_xxx")
+    .param("privacy", "1");
+let result = client.event_privacy(&query).await?;
+```
+
+---
+
+#### 获取当前用户全部动态
+
+说明 : 登录后自动翻页获取当前用户可枚举的全部动态，并按动态 id 去重。返回体包含 `events`、`retrievedCount`、`unavailableCount`、`sizeMismatch`、`pageCount`、`more`、`lasttime`。
+
+**参数 :** 无
+
+**方法名 :** `user_event_all`
+
+**调用例子 :**
+```rust
+let query = Query::new();
+let result = client.user_event_all(&query).await?;
+```
+
+---
+
+
 ### 歌曲相关
 
 ---
@@ -903,7 +1084,11 @@ let result = client.song_url(&query).await?;
 
 说明 : 使用注意事项同上
 
-**必选参数 :** `id` : 音乐 id ; `level` : 播放音质等级，分为 `standard` => 标准，`higher` => 较高，`exhigh` => 极高，`lossless` => 无损，`hires` => Hi-Res，`jyeffect` => 高清环绕声，`sky` => 沉浸环绕声，`dolby` => 杜比全景声，`jymaster` => 超清母带
+**必选参数 :** `id` : 音乐 id
+
+**可选参数 :** `level` : 播放音质等级，常用取值：`standard` 标准、`higher` 较高、`exhigh` 极高、`lossless` 无损、`hires` Hi-Res、`jyeffect` 高清臻音、`vivid` 臻音全景声、`jymaster` 超清母带、`sky` 沉浸环绕声、`dolby` 杜比全景声，默认 `standard` ; `immerseType` : `level=sky` 时的沉浸声类型，可选 `c512` / `ste2` / `aac2` / `c51` / `ste` / `aac`，默认 `c51`
+
+`level=vivid` 时会自动附带 Android 平台 cookie（`os=android`、`appver=9.5.61`）。
 
 **方法名 :** `song_url_v1`
 
@@ -921,7 +1106,9 @@ let result = client.song_url_v1(&query).await?;
 
 说明 : 只允许传入单个 id，会使用 302 重定向请求到目标 url
 
-**必选参数 :** `id` : 音乐 id ; `level` : 播放音质等级（同 `song_url_v1`）
+**必选参数 :** `id` : 音乐 id ; `level` : 播放音质等级（同 `song_url_v1`，支持 `vivid`）
+
+`level=vivid` 时会自动附带 Android 平台 cookie，且回退请求使用 `encodeType=mp3`。
 
 **方法名 :** `song_url_v1_302`
 
@@ -990,7 +1177,9 @@ let result = client.song_download_url(&query).await?;
 
 说明 : 使用 `song_url_v1` 接口获取的是歌曲试听 url，非 VIP 账号最高只能获取极高音质，但免费类型的歌曲（fee == 0）使用本接口可最高获取 Hi-Res 音质的 url
 
-**必选参数 :** `id` : 音乐 id ; `level` : 播放音质等级（同 `song_url_v1`）
+**必选参数 :** `id` : 音乐 id ; `level` : 播放音质等级（同 `song_url_v1`，支持 `vivid`）
+
+`level=vivid` 时会自动附带 Android 平台 cookie（`os=android`、`appver=9.5.61`）。
 
 **方法名 :** `song_download_url_v1`
 
@@ -1373,6 +1562,154 @@ let result = client.audio_match(&query).await?;
 
 ---
 
+#### 红心/取消红心歌曲 v1
+
+说明 : 新版红心接口，使用 xeapi 通道和 v3 反作弊 token
+
+**必选参数 :** `id` : 歌曲 id
+
+**可选参数 :** `like` : 默认为 `true`，传 `false` 表示取消红心
+
+**方法名 :** `like_v1`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("id", "347230");
+let result = client.like_v1(&query).await?;
+
+// 取消红心
+let query = Query::new().param("id", "347230").param("like", "false");
+let result = client.like_v1(&query).await?;
+```
+
+---
+
+#### 喜欢歌曲（旧版）
+
+说明 : 旧版喜欢/取消喜欢歌曲接口（weapi）。新代码建议使用 `like` 或 `like_v1`
+
+**必选参数 :** `id` : 歌曲 id ; `uid` : 用户 id
+
+**可选参数 :** `like` : 默认为 `true`，传 `false` 表示取消喜欢
+
+**方法名 :** `song_like`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("id", "347230").param("uid", "32953014");
+let result = client.song_like(&query).await?;
+```
+
+---
+
+#### 提交歌曲播放状态
+
+说明 : 上报歌曲播放状态，用于最近播放、播放进度同步等场景
+
+**必选参数 :** `id` : 歌曲 id
+
+**可选参数 :** `sessionId` : 会话 id，不传则随机生成 ; `progress` : 播放进度，默认 `0` ; `playMode` : 播放模式，默认 `list_loop` ; `type` : 资源类型，默认 `song`
+
+**方法名 :** `relay_play_state_submit`
+
+**调用例子 :**
+```rust
+let query = Query::new()
+    .param("id", "1969519579")
+    .param("progress", "30.5")
+    .param("playMode", "list_loop");
+let result = client.relay_play_state_submit(&query).await?;
+```
+
+---
+
+#### 听歌打卡 v1（NCBL 加密）
+
+说明 : 仿桌面客户端 PLV/PLD 上报的听歌打卡，使用 NCBL 加密上传。需要登录，且 query 中必须携带包含 `MUSIC_U` 的 cookie。PLV 与 PLD 分两次上传。
+
+**必选参数 :** `id` : 歌曲 id ; `time` : 播放时长（秒，必须大于 0）
+
+**可选参数 :** `total` : 歌曲总时长（秒），不传时使用 `time` ; `sourceid` / `sourceId` : 来源 id，默认使用歌曲 id ; `source` : 来源名，默认 `list` ; `bitrate` : 码率，默认 `320` ; `level` : 音质等级，默认 `exhigh`
+
+**方法名 :** `scrobble_v1`
+
+**调用例子 :**
+```rust
+let query = Query::new()
+    .param("id", "1969519579")
+    .param("time", "180")
+    .param("total", "240")
+    .param("sourceid", "36780169");
+let result = client.scrobble_v1(&query).await?;
+```
+
+---
+
+#### 灰色歌曲其他版本推荐
+
+说明 : 获取灰色歌曲可播放的其他版本推荐
+
+**必选参数 :** `id` : 歌曲 id（兼容 `songid`）
+
+**方法名 :** `song_copyright_rcmd`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("id", "1969519579");
+let result = client.song_copyright_rcmd(&query).await?;
+```
+
+---
+
+#### 歌曲创作者信息
+
+说明 : 获取歌曲的创作者（作曲、作词、编曲等）信息
+
+**必选参数 :** `id` : 歌曲 id
+
+**方法名 :** `song_creators`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("id", "1969519579");
+let result = client.song_creators(&query).await?;
+```
+
+---
+
+#### 插播相似歌曲
+
+说明 : 获取播放页插播推荐使用的相似歌曲
+
+**必选参数 :** `id` : 歌曲 id
+
+**方法名 :** `song_simi_get`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("id", "1969519579");
+let result = client.song_simi_get(&query).await?;
+```
+
+---
+
+#### 歌曲百科
+
+说明 : 获取歌曲百科信息
+
+**必选参数 :** `id` : 歌曲 id
+
+**方法名 :** `song_wiki_info`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("id", "1969519579");
+let result = client.song_wiki_info(&query).await?;
+```
+
+---
+
+
 ### 搜索相关
 
 ---
@@ -1513,6 +1850,23 @@ let result = client.search_match(&query).await?;
 ```
 
 ---
+
+#### 搜索建议（PC 端）
+
+说明 : PC 端搜索建议接口
+
+**必选参数 :** `keyword` : 关键词
+
+**方法名 :** `search_suggest_pc`
+
+**调用例子 :**
+```rust
+let query = Query::new().param("keyword", "周杰伦");
+let result = client.search_suggest_pc(&query).await?;
+```
+
+---
+
 
 ## 歌单相关
 
@@ -2280,6 +2634,115 @@ let result = client.starpick_comments_summary(&query).await?;
 
 ---
 
+### 发送评论
+
+说明 : 发送评论。使用 xeapi 通道和易盾 v3 token，需要登录
+
+**必选参数 :** `id` : 资源 id ; `type` : 资源类型，`0` 为歌曲，其他类型见 `RESOURCE_TYPE_MAP` ; `content` : 评论内容
+
+**方法名 :** `comment_add`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("id", "347230")
+    .param("type", "0")
+    .param("content", "好听");
+let result = client.comment_add(&query).await?;
+```
+
+---
+
+### 回复评论
+
+说明 : 回复指定评论。使用 xeapi 通道和易盾 v3 token，需要登录
+
+**必选参数 :** `id` : 资源 id ; `type` : 资源类型 ; `cid` : 被回复的评论 id ; `content` : 回复内容
+
+> 注意：参数已按上游改为 `id` / `type` / `cid`，旧版的 `threadId` / `commentId` 不再使用。
+
+**方法名 :** `comment_reply`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("id", "347230")
+    .param("type", "0")
+    .param("cid", "123456789")
+    .param("content", "回复内容");
+let result = client.comment_reply(&query).await?;
+```
+
+---
+
+### 删除评论
+
+说明 : 删除自己发送的评论。使用 xeapi 通道，需要登录
+
+**必选参数 :** `id` : 资源 id ; `type` : 资源类型 ; `cid` : 评论 id（兼容旧参数名 `commentId`）
+
+**方法名 :** `comment_delete`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("id", "347230")
+    .param("type", "0")
+    .param("cid", "123456789");
+let result = client.comment_delete(&query).await?;
+```
+
+---
+
+### 举报评论
+
+说明 : 举报指定评论
+
+**必选参数 :** `id` : 资源 id ; `cid` : 评论 id
+
+**可选参数 :** `reason` : 举报原因
+
+**方法名 :** `comment_report`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("id", "347230")
+    .param("cid", "123456789")
+    .param("reason", "垃圾广告");
+let result = client.comment_report(&query).await?;
+```
+
+---
+
+### 通用评论接口
+
+说明 : 兼容 Node.js 版 `/comment` 的通用入口，根据 `t` 分发到发送、删除、回复。新代码建议直接使用 `comment_add` / `comment_delete` / `comment_reply`
+
+**必选参数 :** `t` : `1` 发送、`0` 删除、`2` 回复 ; `type` : 资源类型
+
+**按操作需要 :** `id` : 资源 id ; `content` : 评论内容 ; `commentId` : 评论 id ; 动态评论时传 `threadId`
+
+**方法名 :** `comment`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("t", "1")
+    .param("type", "0")
+    .param("id", "347230")
+    .param("content", "好听");
+let result = client.comment(&query).await?;
+```
+
+---
+
+
 ## 歌手相关
 
 ### 获取歌手单曲
@@ -2546,6 +3009,117 @@ let result = client.artist_video(&query).await?;
 ```
 
 ---
+
+### 关注歌手新歌与 MV（v2）
+
+说明 : 登录后获取关注歌手的新歌曲和 MV
+
+**可选参数 :** `startTimestamp` / `before` : 起始时间戳（毫秒），默认当前时间 ; `sourceType` : 来源类型，默认 `1` ; `limit` : 数量，默认 `10` ; `firstRequest` : 是否首次请求，默认 `true`
+
+**方法名 :** `artist_new_song_mv_list_v2`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("limit", "20")
+    .param("firstRequest", "false");
+let result = client.artist_new_song_mv_list_v2(&query).await?;
+```
+
+---
+
+### 关注歌手新歌播放全部
+
+说明 : 登录后获取所有关注歌手最近的 50 首新歌
+
+**参数 :** 无
+
+**方法名 :** `artist_new_song_playall`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.artist_new_song_playall(&query).await?;
+```
+
+---
+
+### 乐迷团详情
+
+说明 : 获取歌手乐迷团详情
+
+**必选参数 :** `groupId` : 乐迷团 id（兼容 `id`）
+
+**可选参数 :** `scene` : 场景标识
+
+**方法名 :** `fans_group_detail`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("groupId", "123456");
+let result = client.fans_group_detail(&query).await?;
+```
+
+---
+
+### 乐迷团推荐笔记
+
+说明 : 获取乐迷团推荐笔记列表
+
+**必选参数 :** `fansGroupId` : 乐迷团 id（兼容 `groupId`）
+
+**可选参数 :** `artistSelf` : 是否歌手本人，默认 `0` ; `cursor` : 分页游标，默认 `0` ; `size` : 数量，默认 `10`
+
+**方法名 :** `fans_group_feed_recommend`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("fansGroupId", "123456")
+    .param("size", "20");
+let result = client.fans_group_feed_recommend(&query).await?;
+```
+
+---
+
+### 用户所在乐迷团详情
+
+说明 : 获取当前用户在某乐迷团中的详情
+
+**必选参数 :** `groupId` : 乐迷团 id（兼容 `id`）
+
+**方法名 :** `fans_group_user_group_detail`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("groupId", "123456");
+let result = client.fans_group_user_group_detail(&query).await?;
+```
+
+---
+
+### 用户加入的乐迷团列表
+
+说明 : 登录后获取当前用户加入的全部歌手乐迷团
+
+**参数 :** 无
+
+**方法名 :** `fans_group_user_groups`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.fans_group_user_groups(&query).await?;
+```
+
+---
+
 
 ## 专辑相关
 
@@ -3528,6 +4102,113 @@ let result = client.dj_radio_top(&query).await.unwrap();
 
 ---
 
+### dj_difm_all_style_channel - DIFM 电台分类
+
+说明 : 获取 DIFM 电台的全部风格分类频道
+
+**可选参数 :** `sources` : 来源数组字符串，默认 `[0]`
+
+**方法名 :** `dj_difm_all_style_channel`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("sources", "[0]");
+let result = client.dj_difm_all_style_channel(&query).await.unwrap();
+```
+
+---
+
+### dj_difm_channel_subscribe - 收藏 DIFM 频道
+
+说明 : 收藏 DIFM 电台频道，需要登录
+
+**必选参数 :** `id` : 频道 id
+
+**方法名 :** `dj_difm_channel_subscribe`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("id", "123456");
+let result = client.dj_difm_channel_subscribe(&query).await.unwrap();
+```
+
+---
+
+### dj_difm_channel_unsubscribe - 取消收藏 DIFM 频道
+
+说明 : 取消收藏 DIFM 电台频道，需要登录
+
+**必选参数 :** `id` : 频道 id
+
+**方法名 :** `dj_difm_channel_unsubscribe`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("id", "123456");
+let result = client.dj_difm_channel_unsubscribe(&query).await.unwrap();
+```
+
+---
+
+### dj_difm_playing_tracks_list - DIFM 播放列表
+
+说明 : 获取 DIFM 频道的播放列表
+
+**必选参数 :** `channelId` : 频道 id
+
+**可选参数 :** `limit` : 数量，默认 `5` ; `source` : 来源，默认 `0`
+
+**方法名 :** `dj_difm_playing_tracks_list`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("channelId", "123456")
+    .param("limit", "10");
+let result = client.dj_difm_playing_tracks_list(&query).await.unwrap();
+```
+
+---
+
+### dj_difm_subscribe_channels_get - DIFM 收藏列表
+
+说明 : 获取已收藏的 DIFM 频道列表，需要登录
+
+**可选参数 :** `sources` : 来源数组字符串，默认 `[0]`
+
+**方法名 :** `dj_difm_subscribe_channels_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.dj_difm_subscribe_channels_get(&query).await.unwrap();
+```
+
+---
+
+### radio_sport_get - 跑步漫游
+
+说明 : 根据步频获取跑步漫游电台
+
+**可选参数 :** `bpm` : 步频，默认 `50`
+
+**方法名 :** `radio_sport_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("bpm", "120");
+let result = client.radio_sport_get(&query).await.unwrap();
+```
+
+---
+
+
 ## 🎯 推荐相关
 
 ### personalized - 推荐歌单
@@ -3956,6 +4637,77 @@ let result = client.simi_user(&query).await.unwrap();
 
 ---
 
+### recommend_category_configs - 每日风格推荐配置
+
+说明 : 获取每日风格推荐的场景配置列表
+
+**参数 :** 无
+
+**方法名 :** `recommend_category_configs`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.recommend_category_configs(&query).await.unwrap();
+```
+
+---
+
+### recommend_category_set - 设置每日风格推荐
+
+说明 : 设置每日风格推荐的标签和场景
+
+**必选参数 :** `tags` : 标签 id，多个用逗号分隔 ; `category` : 场景 id
+
+**方法名 :** `recommend_category_set`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("tags", "1001,1002")
+    .param("category", "1");
+let result = client.recommend_category_set(&query).await.unwrap();
+```
+
+---
+
+### recommend_category_songs - 每日风格推荐歌曲
+
+说明 : 获取每日风格推荐歌曲
+
+**参数 :** 无
+
+**方法名 :** `recommend_category_songs`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.recommend_category_songs(&query).await.unwrap();
+```
+
+---
+
+### recommend_songs_v1 - 每日推荐歌曲 v1
+
+说明 : 新版每日推荐歌曲接口
+
+**可选参数 :** `ispush` : 是否推送，默认 `false`
+
+**方法名 :** `recommend_songs_v1`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("ispush", "true");
+let result = client.recommend_songs_v1(&query).await.unwrap();
+```
+
+---
+
+
 ## 🏆 排行榜相关
 
 ### toplist - 所有榜单
@@ -4149,6 +4901,45 @@ let result = client.top_list(&query).await.unwrap();
 
 ---
 
+### chart_detail - 排行榜详情
+
+说明 : 获取指定维度音乐排行榜详情。该接口免登录
+
+**必选参数 :** `chartCode` : 榜单编码
+
+**可选参数 :** `targetId` : 目标 id ; `targetType` : 目标类型
+
+**方法名 :** `chart_detail`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("chartCode", "19723756");
+let result = client.chart_detail(&query).await.unwrap();
+```
+
+---
+
+### chart_song_detail - 排行榜歌曲列表
+
+说明 : 获取指定维度音乐排行榜的歌曲列表。该接口免登录
+
+**必选参数 :** `chartCode` : 榜单编码
+
+**可选参数 :** `targetId` : 目标 id ; `targetType` : 目标类型
+
+**方法名 :** `chart_song_detail`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("chartCode", "19723756");
+let result = client.chart_song_detail(&query).await.unwrap();
+```
+
+---
+
+
 ## 云盘相关
 
 ### user_cloud - 云盘数据
@@ -4219,7 +5010,9 @@ let result = client.cloud(&query).await.unwrap();
 
 ### cloud_import - 云盘导入歌曲
 
-说明 : 登录后调用此接口,可云盘导入歌曲而无需上传文件。以下情况可导入成功: 1.文件已经有用户上传至云盘 2.文件是网易云音乐自己的音源
+说明 : 登录后调用此接口,可云盘导入歌曲而无需上传文件。以下情况可导入成功: 1.文件已经有用户上传至云盘 2.文件是网易云音乐自己的音源。
+
+接口会先调用云盘检查接口取得 `songId`，再执行导入，调用方不需要自行先查询 `songId`。
 
 **必选参数 :** `song` : 歌名/文件名 ; `fileType` : 文件后缀 ; `fileSize` : 文件大小 ; `bitrate` : 文件比特率 ; `md5` : 文件 MD5
 
@@ -4333,6 +5126,24 @@ let result = client.cloud_upload_complete(&query).await.unwrap();
 ```
 
 ---
+
+### song_cloud_download - 云盘歌曲下载链接
+
+说明 : 从云盘获取歌曲下载链接
+
+**必选参数 :** `id` : 云盘歌曲 id
+
+**方法名 :** `song_cloud_download`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("id", "123456");
+let result = client.song_cloud_download(&query).await.unwrap();
+```
+
+---
+
 
 ## 💌 私信相关
 
@@ -4657,7 +5468,7 @@ let result = client.vip_info_v2(&query).await.unwrap();
 
 ### vip_sign - 黑胶乐签打卡
 
-说明 : 登录后调用此接口,进行黑胶乐签打卡
+说明 : 登录后调用此接口,进行黑胶乐签打卡。返回体包含 `taskSign`、`checkinDetail`、`signed`、`message`，两个上游接口都返回 `code=200` 时 `signed=true`。
 
 **方法名 :** `vip_sign`
 
@@ -4772,6 +5583,75 @@ let result = client.vip_growthpoint_get(&query).await.unwrap();
 ```
 
 ---
+
+### vip_growthpoint_getall - 一键领取会员成长值
+
+说明 : 登录后一键领取所有会员成长值任务奖励
+
+**参数 :** 无
+
+**方法名 :** `vip_growthpoint_getall`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.vip_growthpoint_getall(&query).await.unwrap();
+```
+
+---
+
+### vip_sign_history - 黑胶乐签历史/状态
+
+说明 : 获取黑胶乐签打卡历史或状态信息
+
+**可选参数 :** `type` : `0` 用户信息栏、`1` 黑胶乐签，默认 `0`
+
+**方法名 :** `vip_sign_history`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("type", "1");
+let result = client.vip_sign_history(&query).await.unwrap();
+```
+
+---
+
+### vip_sign_detail - 黑胶乐签打卡详情
+
+说明 : 获取黑胶乐签打卡详情
+
+**可选参数 :** `timestamp` : 打卡日期时间戳，对应请求中的 `signDayTime`
+
+**方法名 :** `vip_sign_detail`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("timestamp", "1757000000000");
+let result = client.vip_sign_detail(&query).await.unwrap();
+```
+
+---
+
+### vip_tasks_v1 - 会员任务（新版）
+
+说明 : 登录后获取新版会员任务中心的任务进度
+
+**可选参数 :** `id` : 用户 id，对应请求中的 `userId`
+
+**方法名 :** `vip_tasks_v1`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.vip_tasks_v1(&query).await.unwrap();
+```
+
+---
+
 
 ## 🌟 云贝
 
@@ -4960,6 +5840,58 @@ let result = client.yunbei_rcmd_song_history(&query).await.unwrap();
 ```
 
 ---
+
+### yunbei_task_list_v1 - 云贝广告任务状态
+
+说明 : 查询今日云贝广告任务状态，需要登录
+
+**参数 :** 无
+
+**方法名 :** `yunbei_task_list_v1`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.yunbei_task_list_v1(&query).await.unwrap();
+```
+
+---
+
+### yunbei_task_recommend_song - 云贝任务推荐歌曲
+
+说明 : 获取云贝广告任务推荐歌曲
+
+**可选参数 :** `offset` : 偏移量，默认 `0` ; `limit` : 数量，默认 `10`
+
+**方法名 :** `yunbei_task_recommend_song`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("offset", "0").param("limit", "20");
+let result = client.yunbei_task_recommend_song(&query).await.unwrap();
+```
+
+---
+
+### yunbei_task_finish_v1 - 完成云贝广告任务
+
+说明 : 完成云贝广告任务并领取云贝，单日最多 10 次
+
+**可选参数 :** `yunbeiAmount` : 单次可得云贝，默认 `150`
+
+**方法名 :** `yunbei_task_finish_v1`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("yunbeiAmount", "150");
+let result = client.yunbei_task_finish_v1(&query).await.unwrap();
+```
+
+---
+
 
 ## 👣 听歌足迹
 
@@ -5160,6 +6092,24 @@ let result = client.record_recent_voice(&query).await.unwrap();
 ```
 
 ---
+
+### listen_data_song_play_rank - 歌曲播放排行
+
+说明 : 获取听歌足迹中的歌曲播放排行（Top 20）
+
+**可选参数 :** `type` : `week` 或 `month`，默认 `month` ; `endTime` : 截止时间，不传为本周/本月
+
+**方法名 :** `listen_data_song_play_rank`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("type", "week");
+let result = client.listen_data_song_play_rank(&query).await.unwrap();
+```
+
+---
+
 
 ## 🎨 风格/曲风
 
@@ -5374,11 +6324,13 @@ let result = client.digital_album_sales(&query).await.unwrap();
 
 说明 : 可以上传声音到播客
 
-**必选参数 :** `voiceListId` : 播客 id ; `coverImgId` : 播客封面 ; `categoryId` : 分类 id ; `secondCategoryId` : 次级分类 id ; `description` : 声音介绍
+**必选参数 :** `voiceListId` : 播客 id ; `coverImgId` : 播客封面 id ; `categoryId` : 分类 id ; `secondCategoryId` : 次级分类 id ; `description` : 声音介绍
 
-**可选参数 :** `songName` : 声音名称 ; `privacy` : 设为隐私声音 ; `publishTime` : 定时发布时间戳 ; `autoPublish` : 是否发布动态(传入 1) ; `autoPublishText` : 动态文案 ; `orderNo` : 排序,默认为 1 ; `composedSongs` : 包含歌曲(歌曲 id),多个用逗号隔开
+**可选参数 :** `songName` : 声音名称 ; `privacy` : 设为隐私声音 ; `publishTime` : 定时发布时间戳 ; `autoPublish` : 是否发布动态(传入 1) ; `autoPublishText` : 动态文案 ; `orderNo` : 排序,默认为 1 ; `composedSongs` : 包含歌曲(歌曲 id),多个用逗号隔开 ; `img_name` / `img_mimetype` : 封面文件名 / MIME 类型，配合 `cover_img` 参数使用
 
 **方法名 :** `voice_upload`
+
+注意：`voice_upload` 需要额外传入音频文件二进制和可选的封面图片二进制。传入 `cover_img` 时会先上传封面并用返回的图片 id 覆盖 `coverImgId`（对应 Node.js 版的 `imgFile`）。
 
 **Rust 调用例子 :**
 
@@ -5389,7 +6341,11 @@ let query = Query::new()
     .param("categoryId", "1")
     .param("secondCategoryId", "2")
     .param("description", "声音介绍");
-let result = client.voice_upload(&query).await.unwrap();
+let audio = std::fs::read("song.mp3")?;
+let cover = std::fs::read("cover.jpg").ok();
+let result = client
+    .voice_upload(&query, "song.mp3", audio, Some("audio/mpeg"), cover)
+    .await?;
 ```
 
 ---
@@ -5538,6 +6494,131 @@ let result = client.voicelist_trans(&query).await.unwrap();
 ```
 
 ---
+
+### voicelist_my_created - 我创建的播客声音
+
+说明 : 获取当前登录用户创建的播客声音列表
+
+**可选参数 :** `limit` : 数量，默认 `20`
+
+**方法名 :** `voicelist_my_created`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("limit", "20");
+let result = client.voicelist_my_created(&query).await.unwrap();
+```
+
+---
+
+
+## 🧘 助眠解压
+
+### sati_tag_list - 标签列表
+
+说明 : 获取助眠解压的标签列表
+
+**参数 :** 无
+
+**方法名 :** `sati_tag_list`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.sati_tag_list(&query).await.unwrap();
+```
+
+---
+
+### sati_resource_list - 标签下资源列表
+
+说明 : 获取指定标签下的助眠解压资源列表
+
+**可选参数 :** `tag` : 标签 id
+
+**方法名 :** `sati_resource_list`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("tag", "123");
+let result = client.sati_resource_list(&query).await.unwrap();
+```
+
+---
+
+### sati_resource_list_more - 同类推荐
+
+说明 : 获取某个助眠解压资源的同类推荐
+
+**必选参数 :** `id` : 资源 id
+
+**方法名 :** `sati_resource_list_more`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("id", "123456");
+let result = client.sati_resource_list_more(&query).await.unwrap();
+```
+
+---
+
+### sati_resource_sub - 收藏/取消收藏资源
+
+说明 : 收藏或取消收藏助眠解压资源，需要登录
+
+**必选参数 :** `id` : 资源 id
+
+**可选参数 :** `cancel` : 默认 `false`，传 `true` 表示取消收藏
+
+**方法名 :** `sati_resource_sub`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("id", "123456");
+let result = client.sati_resource_sub(&query).await.unwrap();
+```
+
+---
+
+### sati_resource_sub_list - 收藏列表
+
+说明 : 获取助眠解压资源的收藏列表，需要登录
+
+**参数 :** 无
+
+**方法名 :** `sati_resource_sub_list`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.sati_resource_sub_list(&query).await.unwrap();
+```
+
+---
+
+### sati_timescene_resources_get - 时间场景推荐资源
+
+说明 : 获取特定时间场景的助眠解压推荐资源
+
+**参数 :** 无
+
+**方法名 :** `sati_timescene_resources_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.sati_timescene_resources_get(&query).await.unwrap();
+```
+
+---
+
 
 ## 🎵 音乐人
 
@@ -6089,6 +7170,278 @@ let result = client.broadcast_sub(&query).await.unwrap();
 
 ---
 
+## 🧑‍💻 云小编
+
+> 云小编相关接口均需要登录。考试流程示例：`rep_ugc_exam_start` → `rep_ugc_exam_question_single_get` → `rep_ugc_exam_submit` → `rep_ugc_exam_result_get`。
+
+### middle_play_lottery_remain_chance - 抽奖剩余次数
+
+说明 : 查询云小编每日抽奖的剩余次数
+
+**可选参数 :** `activityId` : 活动 id，默认 `6501202`
+
+**方法名 :** `middle_play_lottery_remain_chance`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.middle_play_lottery_remain_chance(&query).await.unwrap();
+```
+
+---
+
+### middle_play_do_lottery - 每日抽奖
+
+说明 : 进行云小编每日抽奖
+
+**可选参数 :** `activityId` : 活动 id，默认 `6501202` ; `drawCount` : 抽奖次数，默认 `1`
+
+**方法名 :** `middle_play_do_lottery`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("drawCount", "1");
+let result = client.middle_play_do_lottery(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_activity_get - 云小编活动信息
+
+说明 : 获取云小编活动信息
+
+**参数 :** 无
+
+**方法名 :** `rep_ugc_activity_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.rep_ugc_activity_get(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_activity_collect - 领取任务积分
+
+说明 : 领取云小编任务积分
+
+**可选参数 :** `activityId` : 活动 id，默认 `5001`，可从 `rep_ugc_activity_get` 获取
+
+**方法名 :** `rep_ugc_activity_collect`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("activityId", "5001");
+let result = client.rep_ugc_activity_collect(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_user_get - 云小编用户详情
+
+说明 : 获取当前用户在云小编中的详情
+
+**参数 :** 无
+
+**方法名 :** `rep_ugc_user_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.rep_ugc_user_get(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_user_sign - 云小编每日签到
+
+说明 : 云小编每日签到
+
+**参数 :** 无
+
+**方法名 :** `rep_ugc_user_sign`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.rep_ugc_user_sign(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_user_vip - 会员任务状态
+
+说明 : 查询云小编会员任务状态。返回的 `data.status` 为 `10` / `20` 时可领取 1 日黑胶会员，`30` 表示已领取
+
+**参数 :** 无
+
+**方法名 :** `rep_ugc_user_vip`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.rep_ugc_user_vip(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_user_collect_vip - 领取一日会员
+
+说明 : 领取云小编任务的一日黑胶会员
+
+**可选参数 :** `activityId` : 活动 id，默认 `5001`
+
+**方法名 :** `rep_ugc_user_collect_vip`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("activityId", "5001");
+let result = client.rep_ugc_user_collect_vip(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_exam_info_get - 考试状态
+
+说明 : 获取云小编考试状态
+
+**必选参数 :** `examType` : 考试类型，可选 `musicalStyleEnter` / `languageEnter` / `oriSingerEnter` / `emotionEnter`
+
+**方法名 :** `rep_ugc_exam_info_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("examType", "musicalStyleEnter");
+let result = client.rep_ugc_exam_info_get(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_exam_start - 开始考试
+
+说明 : 开始云小编考试
+
+**必选参数 :** `examType` : 考试类型
+
+**方法名 :** `rep_ugc_exam_start`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("examType", "musicalStyleEnter");
+let result = client.rep_ugc_exam_start(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_exam_question_single_get - 考试取题
+
+说明 : 获取云小编考试的下一道题
+
+**必选参数 :** `examType` : 考试类型 ; `taskId` : 考试任务 id
+
+**方法名 :** `rep_ugc_exam_question_single_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("examType", "musicalStyleEnter")
+    .param("taskId", "123456");
+let result = client.rep_ugc_exam_question_single_get(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_exam_submit - 提交答案
+
+说明 : 提交单题答案
+
+**必选参数 :** `examType` : 考试类型 ; `taskId` : 考试任务 id ; `questionId` : 题目 id ; `answer` : 答案，`A` 表示正确，`B` 表示错误
+
+**方法名 :** `rep_ugc_exam_submit`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("examType", "musicalStyleEnter")
+    .param("taskId", "123456")
+    .param("questionId", "789")
+    .param("answer", "A");
+let result = client.rep_ugc_exam_submit(&query).await.unwrap();
+```
+
+---
+
+### rep_ugc_exam_result_get - 考试结果
+
+说明 : 获取云小编考试结果
+
+**必选参数 :** `examType` : 考试类型 ; `taskId` : 考试任务 id
+
+**方法名 :** `rep_ugc_exam_result_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("examType", "musicalStyleEnter")
+    .param("taskId", "123456");
+let result = client.rep_ugc_exam_result_get(&query).await.unwrap();
+```
+
+---
+
+### thinktank_audit_resource_detail - 获取审核任务
+
+说明 : 获取云小编审核任务
+
+**可选参数 :** `type` : `1` 曲风、`2` 语种、`3` 原唱、`4` 情绪标签，默认 `4`
+
+**方法名 :** `thinktank_audit_resource_detail`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("type", "4");
+let result = client.thinktank_audit_resource_detail(&query).await.unwrap();
+```
+
+---
+
+### thinktank_audit_resource_update - 提交审核任务
+
+说明 : 提交云小编审核结果
+
+**必选参数 :** `taskId` : 任务 id ; `judgement` : `1` 同意、`2` 否决、`3` 跳过
+
+**可选参数 :** `type` : 任务类型，默认 `4`
+
+**方法名 :** `thinktank_audit_resource_update`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("taskId", "123456")
+    .param("judgement", "1");
+let result = client.thinktank_audit_resource_update(&query).await.unwrap();
+```
+
+---
+
+
 ## 🔧 其他
 
 ### hot_topic - 获取热门话题
@@ -6445,6 +7798,82 @@ let result = client.verify_qrcodestatus(&query).await.unwrap();
 ```
 
 ---
+
+### ad_get - 获取广告
+
+说明 : 获取广告，并在 `extra.reqId` 中返回广告上报所需的 `req_id`
+
+**可选参数 :** `type_ids` : 广告位类型 ID 的 JSON 数组字符串，默认 `["400002_0"]`
+
+**方法名 :** `ad_get`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new().param("type_ids", r#"["400002_0"]"#);
+let result = client.ad_get(&query).await.unwrap();
+```
+
+---
+
+### ad_listening_rights - 免费听时长状态
+
+说明 : 获取免费听时长状态
+
+**参数 :** 无
+
+**方法名 :** `ad_listening_rights`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.ad_listening_rights(&query).await.unwrap();
+```
+
+---
+
+### decrypt - 通用解密
+
+说明 : 解密 eapi / weapi / linuxapi / xeapi 的请求或返回数据，主要用于调试
+
+**必选参数 :** `data` : 待解密内容（兼容 `hexString`）
+
+**可选参数 :** `crypto` : 加密方式，可选 `eapi` / `weapi` / `linuxapi` / `xeapi` / `api`，默认 `eapi` ; `isReq` : 是否为请求数据，默认 `true`，传 `false` 表示解密返回数据
+
+> 说明：`weapi` 请求数据需要 RSA 私钥、`xeapi` 请求数据涉及 X25519 密钥交换，均暂不支持；两者的返回数据解密可用。
+
+**方法名 :** `decrypt`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new()
+    .param("crypto", "eapi")
+    .param("data", "XXXX")
+    .param("isReq", "true");
+let result = client.decrypt(&query).await.unwrap();
+```
+
+---
+
+### lbs_city_code - 多级行政区划数据
+
+说明 : 获取多级行政区划数据
+
+**可选参数 :** `bizCode` : 业务编码
+
+**方法名 :** `lbs_city_code`
+
+**Rust 调用例子 :**
+
+```rust
+let query = Query::new();
+let result = client.lbs_city_code(&query).await.unwrap();
+```
+
+---
+
 
 ## 致谢 & License
 

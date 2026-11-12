@@ -28,7 +28,7 @@
 - **完整加密支持** - 实现 weapi / eapi / linuxapi / xeapi / neapi 加密方式
 - **极低内存占用** - ~5MB vs Node.js ~50-100MB
 - **异步非阻塞** - 基于 tokio + reqwest 的异步请求
-- **300+ 开箱即用的 API 接口** - 与 Node.js 版本 1:1 对应
+- **400+ 开箱即用的 API 接口** - 与 Node.js 版本 1:1 对应
 - **模块化设计** - 每个 API 独立文件，易于扩展和维护
 - **统一的参数模式** - 所有接口使用 `Query` 对象传参，用法简洁一致
 - **代理支持** - 支持 HTTP / SOCKS5 代理
@@ -354,7 +354,7 @@ axum::serve(listener, app).await?;
 
 ## API 文档
 
-**完整接口文档请查看 [docs/API.md](docs/API.md)**，涵盖全部接口的详细参数说明和调用示例。
+**完整接口文档请查看 [docs/API.md](docs/API.md)**，涵盖全部接口的详细参数说明和调用示例。从旧版本升级请先阅读 [docs/MIGRATION.md](docs/MIGRATION.md) 中的不兼容变更说明。
 
 ### 接口速查表
 
