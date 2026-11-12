@@ -5,12 +5,10 @@
 **网易云音乐 API Rust 原生实现**
 
 [![Rust](https://img.shields.io/badge/Rust-1.70+-orange?logo=rust)](https://www.rust-lang.org/)
-[![Crates.io](https://img.shields.io/crates/v/ncm-api-rs.svg)](https://crates.io/crates/ncm-api-rs)
-[![GitHub Release](https://img.shields.io/github/v/release/SPlayer-Dev/ncm-api-rs)](https://github.com/SPlayer-Dev/ncm-api-rs/releases)
 [![License](https://img.shields.io/badge/license-WTFPL-brightgreen.svg)](LICENSE)
 [![Tokio](https://img.shields.io/badge/async-tokio-blue?logo=rust)](https://tokio.rs/)
 
-从 [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) 移植的 Rust 原生 SDK，无需 Node.js 运行时
+本仓库 fork 自 [SPlayer-Dev/ncm-api-rs](https://github.com/SPlayer-Dev/ncm-api-rs)，是 [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) 的 Rust 原生实现，无需 Node.js 运行时。
 
 </div>
 
@@ -18,7 +16,7 @@
 
 ## 项目简介
 
-本项目是 [NeteaseCloudMusicApi Enhanced](https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced) 的 Rust 原生实现。通过跨站请求伪造 (CSRF) 和伪造请求头，调用网易云音乐官方 API，提供与 Node.js 版本 1:1 对应的接口。
+项目通过跨站请求伪造 (CSRF) 和伪造请求头，调用网易云音乐官方 API，提供与 Node.js 版本 1:1 对应的接口。
 
 所有 API 方法统一使用 `Query` 对象传参，与 Node.js 版本保持一致的调用风格，同时充分利用 Rust 的类型安全和零成本抽象特性。
 
@@ -39,50 +37,12 @@
 
 ### 安装
 
-#### 作为 Rust 库依赖
+#### 从 Git 安装
 
 ```toml
 [dependencies]
-ncm-api-rs = "0.1"
+ncm-api-rs = { git = "https://github.com/linyisu/ncm-api-rs.git" }
 tokio = { version = "1", features = ["full"] }
-```
-
-或从 Git 安装最新版：
-
-```toml
-[dependencies]
-ncm-api-rs = { git = "https://github.com/SPlayer-Dev/ncm-api-rs.git" }
-tokio = { version = "1", features = ["full"] }
-```
-
-#### 安装 HTTP 服务器
-
-通过 cargo 安装：
-
-```bash
-cargo install ncm-api-rs --features server
-```
-
-或从 [GitHub Releases](https://github.com/SPlayer-Dev/ncm-api-rs/releases) 下载预编译二进制文件，支持以下平台：
-
-| 平台 | 架构 | 文件 |
-|------|------|------|
-| Linux | x64 | `ncm-server-vX.X.X-x86_64-unknown-linux-gnu.tar.gz` |
-| Linux | ARM64 | `ncm-server-vX.X.X-aarch64-unknown-linux-gnu.tar.gz` |
-| macOS | x64 | `ncm-server-vX.X.X-x86_64-apple-darwin.tar.gz` |
-| macOS | Apple Silicon | `ncm-server-vX.X.X-aarch64-apple-darwin.tar.gz` |
-| Windows | x64 | `ncm-server-vX.X.X-x86_64-pc-windows-msvc.zip` |
-
-下载后解压即可运行：
-
-```bash
-# Linux / macOS
-tar xzf ncm-server-*.tar.gz
-./ncm-server
-
-# Windows
-# 解压 zip 后双击 ncm-server.exe 或在终端运行
-ncm-server.exe
 ```
 
 ### 基础使用
